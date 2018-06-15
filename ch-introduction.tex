@@ -89,4 +89,33 @@ The $k$-eigenvalue form of the equation is given as:
 \end{equation}
 
 \subsection{Nonlinear Diffusion Acceleration}
-While the assumptions of the diffusion equation greatly simplify the mathematics, they do not always accurately represent the physics of a reactor. Nonlinear Diffusion Acceleration, the approximation on which this work is based, improves on the accuracy of diffusion by introducing a corrective term called the drift vector. The fixed source
+While the assumptions of the diffusion equation greatly simplify the mathematics, they do not always accurately represent the physics of a reactor. Nonlinear Diffusion Acceleration, the approximation on which this work is based, improves on the accuracy of diffusion by introducing a corrective term called the drift vector. The fixed source is given 
+
+\begin{equation}
+  \nabla\cdot(-D_\rg \nabla \varphi_\rg - \vec{\bf D}_\rg \varphi_\rg) + \sigma_{r,\rg} \varphi_\rg = \sum\limits_{\rgp\neq\rg}\sigma_{\mm{s},\rg' \rightarrow \rg}\varphi_{\rg'} + Q_\rg(\vec{r}) \:, \label{eq:NDA_fixed_source}
+  \end{equation}
+  where the drift vector $\vec{\bf D}_\rg$ is defined as
+  \begin{equation}
+  \vec{\bf D}_\rg= \frac{\sum_{\mrm=1}^M \omega_{\mrm, \rg} [\frac{1}{\sigma_t} \vec{\Omega}_{\mrm, \rg} \vec{\Omega}_{\mrm, \rg} \cdot \nabla\psi_{\mrm, \rg}] - D_\rg \nabla \phi_\rg}{\phi_\rg}\:. \label{eq:drift_vector}
+  \end{equation}
+ 
+ The eigenvalue form looks like:
+ \begin{equation}
+  \nabla\cdot(-D_\rg \nabla \varphi_\rg - \vec{\bf D}_\rg \varphi_\rg) + \sigma_{r,\rg} \varphi_\rg = \sum\limits_{\rgp\neq\rg}\sigma_{\mm{s},\rg' \rightarrow \rg}\varphi_{\rg'} +  \frac{\chig}{k} \sum\limits_{\rg'=1}^\mm{G} \nu \sigma_{\mm{f},\rg'}\left(\vec{r}\right) \varphi_\rgp\left(\vec{r}\right) \:, \label{eq:NDA_eigenvalue}
+  \end{equation}
+
+\subsection{Self-Adjoint Angular Flux}
+In calculating the drift vector in the NDA equations, we use the scalar flux calculated by a ``higher-order equation." In this case, we will be using the Self-Adjoint Angular Flux Equation (SAAF) \cite{saaf} as our higher order equation. 
+
+The monoenergetic version of the Self-Adjoint Angular Flux equation appropriate for $S_n$ calculations is as follows:
+\begin{equation}
+    - \vec{\Omega} \cdot \vec{\nabla}\frac{1}{\sigma_t}\vec{\Omega} \cdot \vec{\nabla} \psi + \sigma_t \psi = S\psi + q - \vec{\Omega} \cdot \vec{\nabla} \frac{(S\psi + q)}{\sigma_t}
+    \label{eq:SAAF}
+\end{equation}
+Where $\vec{\Omega}$ are the angles, $\sigma_t$ is the total cross section, $\psi$ is the angular flux, $S\psi$ is the scattering source, and $q$ is the fixed source (for ease, we write $S\psi + q$ as $Q$ to represent the total source.
+
+The eigenvalue formulation is
+\begin{equation}
+        - \vec{\Omega} \cdot \vec{\nabla}\frac{1}{\sigma_t}\vec{\Omega} \cdot \vec{\nabla} \psi + \sigma_t \psi = S\Psi + \frac{1}{k}\frac{\chi}{4\pi}\nu\sigma_f\phi - \vec{\Omega} \cdot \vec{\nabla} \frac{(S\Psi + \frac{1}{k}\frac{\chi}{4\pi}\nu\sigma_f\phi)}{\sigma_t}
+    \label{eq:SAAF-eigenvalue}
+\end{equation}
