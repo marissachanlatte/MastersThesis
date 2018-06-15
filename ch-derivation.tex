@@ -1,0 +1,41 @@
+Consider the first order, multigroup, steady state, \sn\ transport equation with isotropic scattering and internal source, where $\rg$ is the group index and $m$ is the angle index.
+  \begin{equation}
+  \vec{\Omega}_{\mrm,\rg}\cdot \nabla \psi_{\mrm,\rg} \left(\vec{r}\right)+ \sigma_{\mm{t},\rg}\left(\vec{r}\right)\psi_{\mrm,\rg} = \frac{1}{4 \pi} \sum\limits_{\rg'=1}^\mm{G} \sigma_{\mm{s},\rgp\to\rg}\left(\vec{r}\right) \varphigp\left(\vec{r}\right) + \frac{1}{4 \pi} S_\mathrm{f,g}\:,
+  \end{equation}
+  where  $S_\mathrm{f,g} = \chig \sum\limits_{\rg'=1}^\mm{G} \nu \sigma_{\mm{f},\rg'}\left(\vec{r}\right) \varphi_\rgp\left(\vec{r}\right) + Q_\rg \left(\vec{r}\right)$. Here, we assume vacuum boundary conditions.
+  \par
+  Using a similar technique as Peterson et al.\ used for the one group case \cite{morel-holo}, we have the following NDA equation:
+  \begin{equation}
+  \nabla\cdot(-D_\rg \nabla \varphi_\rg - \vec{\bf D}_\rg \varphi_\rg) + \sigma_{r,\rg} \varphi_\rg = \sum\limits_{\rgp\neq\rg}\sigma_{\mm{s},\rg' \rightarrow \rg}\varphi_{\rg'} + S_\mathrm{f,g} \:, \label{eq:NDA}
+  \end{equation}
+  where the drift vector $\vec{\bf D}_\rg$ is defined as
+  \begin{equation}
+  \vec{\bf D}_\rg= \frac{\sum_{\mrm=1}^M \omega_{\mrm, \rg} [\frac{1}{\sigma_t} \vec{\Omega}_{\mrm, \rg} \vec{\Omega}_{\mrm, \rg} \cdot \nabla\psi_{\mrm, \rg}] - D_\rg \nabla \phi_\rg}{\phi_\rg}\:.
+  \end{equation}
+  We now begin to add in the upscatter acceleration by determining an equation for the error correction.
+  \par
+  The $k + 1/2$ iteration is expressed as:
+  \begin{equation}
+  \nabla\cdot(-D_\rg \nabla \varphi_\rg^{k+1/2} - \vec{\bf D}_\rg \varphi_\rg^{k+1/2}) + \sigma_{r,\rg} \varphi_\rg^{k+1/2} = \sum\limits_{\substack{\rg'=1}}^\mm{g-1} \sigma_{\mm{s},\rg' \to\rg}\varphi_{\rg}^{k+1/2} + \sum\limits_{\substack{\rg'=\rg+1}}^\mm{G} \sigma_{\mm{s},\rg' \to\rg}\varphi_{\rg'}^{k} + S_\mathrm{f,g}\:. \label{eq:k1/2}
+  \end{equation}
+  We next define the following terms:
+  \begin{equation}
+  \epsilon_\rg^{k+1/2} := \varphi_\rg - \varphi_\rg^{k + 1/2} \quad \mm{and} \quad R_\rg^{k+1/2} := \sum\limits_{\rg'=\rg+1}^\mm{G} \sigma_{\mm{s},\rg' \rg}\left(\varphi_{\rg'}^{k + 1/2} - \varphi_{\rg'}^k\right)\:.
+  \end{equation}
+  $\epsilon_\rg^{k + 1/2}$ can be further broken into the spatial component $\epsilon$ and scattering spectrum $\xi_\rg$ as defined in \cite{morel-upscat,evans-upscat}.
+  \begin{equation}
+  \epsilon_\rg^{k+1/2} = \epsilon^{k+1/2}\left(\vec{r}\right)\xi_\rg
+  \end{equation}
+  Subtracting Eq.\ \eqref{eq:k1/2}\ from Eq.\ \eqref{eq:NDA}\ and adding and subtracting $R_\rg^{k+1/2}$\ gives an exact formulation of the error, but for the sake of efficiency, we approximate the error using the following diffusion approximation:
+  \begin{equation}
+  \nabla\cdot(-D_\rg  \nabla \epsilon_\rg^{k+1/2} - \vec{\bf D}_\rg
+  \epsilon_\rg^{k+1/2}) + \sigma_{r,\rg}  \epsilon_\rg^{k+1/2} =  \sum\limits_{\substack{\rgp\neq\rg}} \sigma_{\mm{s},\rg' \to\rg}  \epsilon_{\rg'}^{k+1/2} + R^{k+1/2}_\rg \:.
+  \end{equation}
+  We split the error into spatial and energy components and then integrate over all groups to collapse into a one group equation.
+  \begin{equation}
+  \nabla\cdot(-\left< D \xi \right> \nabla \epsilon^{k+1/2} - \left<\vec{\bf D} \xi
+  \right> \epsilon^{k+1/2}) + \left< \sigma_{a} \right> \epsilon^{k+1/2} = \left< R^{k+1/2} \right> \:,\label{eq:collapsed}
+  \end{equation}
+  where $\left< X \right> = \sum_{\rg = 1}^G X_\rg $ and $\sigma_{a,\rg}  = \sigma_{r,\rg}\xi_\rg - \sum\limits_{\rgp\neq\rg} \sigma_{s,\rg'\rightarrow \rg} \xi_{\rg'}$.
+  \par
+  Using our approximation for the error, we can find the flux by solving Eqs.\ \eqref{eq:k1/2}\ and \eqref{eq:collapsed}\ to get $\varphi_\rg^{k+1} = \varphi_\rg^{k+1/2} + \epsilon^{k+1/2}\xi_\rg$.

@@ -1,0 +1,66 @@
+
+Solving the transport equation involves several layers of iterative solvers. The scattering term on the right hand side of the transport equation (\ref{eq:transport}) depends on the scalar flux, $phi$, it is handled by a procedure known as source iteration. The $\phi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\phi$ is updated with the result of that solve. This continues until the values converge. In the case of upscattering, an outer layer of iteration is added. We use the Gauss Seidel method to build the scattering source for each group using information from both the current and previous outer iteration. Source iteration is performed to converge the source for each group, in what we now call "inner iterations." Finally in the case of eigenvalue problems, a last layer of iteration is added: the eigenvalue solver. In this work, we use power iteration.
+\par
+Each of these solvers are explained in mathematical detail in the sections that follow.
+\section{Within Group Solver}
+\begin{algorithm}
+\caption{Source Iteration}
+\begin{algorithmic}
+\While{$res > tol$} \Comment {Iteration Index $k$}
+    \State \textbf{Set up} FEM discretization of Eq.
+    \State $S\Psi \gets \sigma_s \phi^{k-1}$ \Comment {Assumes one group, see multigroup below.}
+    \State \textbf{Solve} system $\textbf{H}\psi=q + S\Psi$
+    \State $res \gets max(|\psi^{k} - \psi^{k-1}|)$
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\section{Multigroup Solver}
+\begin{algorithm}
+\caption{Gauss Seidel}
+\begin{algorithmic}
+    \While {$res > tol$} \Comment {Iteration Index $p$}
+        \For {$ g \in G$}
+            \State \textbf{calculate} scattering source: \State $S\Psi = \sigma_{gg}\phi_g^{p+1} + \sum\limits_{g'=1}^{g-1} \sigma_{gg'} \phi_{g'}^{p+1} + \sum\limits_{g'=g+1}^G \sigma_{gg'}\phi_{g'}^p$
+            \Procedure {Source Iteration on group $g$}{} 
+        \EndProcedure
+        \EndFor
+        \State $res \gets max(|\phi^{p} - \phi^{p-1}|)$  \Comment {Check if sol. for each group has converged}
+        \EndWhile
+    \Return $\phi$
+\end{algorithmic}
+\end{algorithm}
+
+\section{Eigenvalue Solver}
+\begin{algorithm}
+\caption{Power Iteration - General}
+\begin{algorithmic}
+    \State $v \gets \frac{v_0}{||v_0||}$ \Comment {Set with initial guess}
+    \While{$res > tol$} \Comment{Iteration index $j$}
+        \State $w \gets \textbf{A}v$
+        \State $v \gets \frac{w}{|| w||}$
+        \State $\lambda \gets v^T\textbf{A}v$
+        \State $res \gets max(|\lambda^j - \lambda^{j-1}|)$
+    \EndWhile
+    \State $x \gets \textbf{A}v$
+    \State \textbf{return} $\lambda, x$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Power Iteration - Transport Implementation}
+\begin{algorithmic}
+    \State $\phi \gets [1, 1, ..., 1] $ \Comment {Set with initial guess}
+    \State $k \gets 1$
+    \While{\texttt{kerr} or \texttt{phierr} $>$ \texttt{tol}} \Comment{Iteration index $j$}
+        \State \texttt{fission\textunderscore source} $\gets$ \texttt{build\textunderscore fission\textunderscore source($\phi^{j-1}$)}/k
+        \State $\phi^j \gets$ \texttt{solve\textunderscore outer(fission\textunderscore source)} \\
+        \State $S_f^j \gets \sum\limits_{g=0}^{G} \int_D \nu \Sigma_{f, g} \phi_g^jdr$
+        \State $k^j \gets \frac{k^{j-1}S_f^j}{S_f^{j-1}}$
+        \State \texttt{kerr} $\gets \frac{||k^j - k^{j-1}||}{k^j}$
+        \State \texttt{phierr} $\gets \frac{||\phi^j - \phi^{j-1}||}{\phi^j}$
+    \EndWhile
+    \State \textbf{return} $\phi, k$
+\end{algorithmic}
+\end{algorithm}
+

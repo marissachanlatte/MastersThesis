@@ -1,0 +1,69 @@
+\documentclass[11pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{tabls}
+\usepackage{afterpage}
+\usepackage{epsf}
+\usepackage{color}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{lmodern}
+\usepackage{todonotes}
+% necessary commands
+\newcommand{\chig}{\chi_\rg}
+\newcommand{\sn}{S$_N$}
+\newcommand{\varphigp}{\varphi_{\rg'}}
+\newcommand{\varphig}{\varphi_\rg}
+\newcommand{\need}[1]{\textcolor{red}{#1}}
+\newcommand{\md}{\mathcal{D}}
+\newcommand{\pd}{\partial\md}
+\newcommand{\mm}[1]{\mathrm{#1}}
+\newcommand{\rg}{\mm{g}}
+\newcommand{\mrm}{\mm{m}}
+\newcommand{\rgp}{{\rg'}}
+\title{A Two-Grid and Nonlinear Diffusion Acceleration Method for the $S_N$ Equations with Neutron Upscattering}
+\author{Marissa Ramirez Zweiger }
+\date{May 21st, 2018}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Introduction}
+\label{sec:intro}
+\input{ch-introduction.tex}
+
+\chapter{Derivation of TG-NDA}
+\label{sec:derivation}
+\input{ch-derivation.tex}
+
+\chapter{The Higher Order Equation: SAAF}
+\label{sec:ho}
+\input{ch-higher-order.tex}
+
+\chapter{The Finite Element Method}
+\label{sec:spatial}
+\input{ch-spatial.tex}
+
+\chapter{Iterative Solvers}
+\label{sec:iterative}
+\input{ch-iterative.tex}
+
+\chapter{Testing \& Validation}
+\label{sec:testing}
+\input{ch-testing.tex}
+
+\chapter{Numerical Results}
+\label{sec:results}
+\input{ch-results.tex}
+
+\chapter{Future Work}
+\label{sec:future}
+\input{ch-future.tex}
+
+\bibliography{mybibfile.bib}
+\bibliographystyle{plain}
+\end{document}
