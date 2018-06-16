@@ -1,7 +1,32 @@
 
-Solving the transport equation involves several layers of iterative solvers. The scattering term on the right hand side of the transport equation (\ref{eq:transport}) depends on the scalar flux, $phi$, it is handled by a procedure known as source iteration. The $\phi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\phi$ is updated with the result of that solve. This continues until the values converge. In the case of upscattering, an outer layer of iteration is added. We use the Gauss Seidel method to build the scattering source for each group using information from both the current and previous outer iteration. Source iteration is performed to converge the source for each group, in what we now call "inner iterations." Finally in the case of eigenvalue problems, a last layer of iteration is added: the eigenvalue solver. In this work, we use power iteration.
+Solving the transport equation involves several nested iterative solvers. 
+\subsubsection{Linear Solver}
+Recall the fixed source transport equation (Eq \ref{eq:transport_fixed_source}).   
+
+
+
+
+The scattering term on the right hand side of the transport equation (\ref{eq:transport}) depends on the scalar flux, $phi$, it is handled by a procedure known as source iteration. The $\phi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\phi$ is updated with the result of that solve. This continues until the values converge. In the case of upscattering, an outer layer of iteration is added. We use the Gauss Seidel method to build the scattering source for each group using information from both the current and previous outer iteration. Source iteration is performed to converge the source for each group, in what we now call "inner iterations." Finally in the case of eigenvalue problems, a last layer of iteration is added: the eigenvalue solver. In this work, we use power iteration.
 \par
 Each of these solvers are explained in mathematical detail in the sections that follow.
+\section{Linear Solver}
+\begin{algorithm}
+\caption{Conjugate Gradient}
+\begin{algorithmic}
+    \State $r \gets b - Ax$
+    \State $p \gets r$
+    \While{$r > tol$}
+        \State $\alpha \gets \frac{r^Tr}{p^TAp}$
+        \State $x \gets x + \alpha p$
+        \State $r_{new} \gets r - \alpha A p$
+        \State $\beta \gets \frac{r_{new}^Tr_{new}}{r^Tr}$
+        \State $p \gets r_{new} + \beta p$
+        \State $r \gets r_{new}$
+    \EndWhile
+    \State \textbf{return} $x$  
+\end{algorithmic}
+\end{algorithm}
+
 \section{Within Group Solver}
 \begin{algorithm}
 \caption{Source Iteration}
@@ -17,7 +42,7 @@ Each of these solvers are explained in mathematical detail in the sections that 
 
 \section{Multigroup Solver}
 \begin{algorithm}
-\caption{Gauss Seidel}
+\caption{Outer Iterations: Gauss Seidel}
 \begin{algorithmic}
     \While {$res > tol$} \Comment {Iteration Index $p$}
         \For {$ g \in G$}
