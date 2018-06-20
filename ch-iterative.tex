@@ -1,15 +1,27 @@
 
 Solving the transport equation involves several nested iterative solvers. 
 \subsubsection{Linear Solver}
-Recall the fixed source transport equation (Eq \ref{eq:transport_fixed_source}).   
+Recall the fixed source transport equation (Eq \ref{eq:transport_fixed_source}). After discretizing in space it takes the form of a linar matrix equation $\textbf{A}\psi = b$. $\textbf{A}$ is the matrix formed by the approximation of the derivative, $[\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E)$, using finite differences or any other discretization method. $b$ is a vector representing the right hand side of (Eq. \ref{eq:transport}): 
 
+\begin{align}
+\chi(E) \int_0^\infty dE'  \int_{4\pi} d\hat{\Omega}' \nu &\Sigma_{f}(\vec{r}, E', \hat{\Omega}')\psi(\vec{r}, \hat{\Omega}', E') \nonumber \\ &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E')  + Q. \nonumber
+\end{align}
 
+In order to be able to treat the problem as a system of linear equations, $b$ must be a constant vector, but we see it is dependent on $\psi$ in the scattering source. To remedy this we choose $\psi$ on the right hand side to be a constant. The method by which we do this, called source iteration, is the next level of iteration, detailed below. Now that $b$ is a constant vector, we are able to perform a linear solve. Solving $\textbf{A}x = b$ is well studied problem, and there are many iterative methods to choose from. Most have already been implemented in forms optimized for performance in various linear algebra libraries such as LAPACK.
 
+\subsubsection{``Inner" Iterations}
+The inner iterations solve the space-angle component for each energy group. As was mentioned above, the scattering term on the right hand side of the transport equation (\ref{eq:transport}) depends on the angular flux, $\psi$, it is often handled by a procedure known as source iteration, also sometimes referred to as the ``inner" iterations. The $\psi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\psi$ is updated with the result of that solve. This continues until the values converge. A more advanced alternative to source iteration that is starting to gain popularity is a Krylov solver. 
 
-The scattering term on the right hand side of the transport equation (\ref{eq:transport}) depends on the scalar flux, $phi$, it is handled by a procedure known as source iteration. The $\phi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\phi$ is updated with the result of that solve. This continues until the values converge. In the case of upscattering, an outer layer of iteration is added. We use the Gauss Seidel method to build the scattering source for each group using information from both the current and previous outer iteration. Source iteration is performed to converge the source for each group, in what we now call "inner iterations." Finally in the case of eigenvalue problems, a last layer of iteration is added: the eigenvalue solver. In this work, we use power iteration.
-\par
-Each of these solvers are explained in mathematical detail in the sections that follow.
-\section{Linear Solver}
+\subsubsection{Multigroup or ``Outer Iterations"}
+The multigroup iterations solve the energy component. When we have more than one energy group, we solve each group independently, performing source iteration on each one. In doing so, we must include the scattering from all other energy groups to the current group multiplied by the flux of the other groups. When there is no ``upscattering", meaning there is no scattering from a lower energy group to a higher energy group, we can solve each group sequentially, starting with the highest energy group, without any problems. No other groups scatter to group one, the highest energy group, the next group is only dependent on the flux from group one, which we just solved for, and so on. In the case of upscattering, an outer layer of iteration is added to converge the scattering source. The most common multigroup solver is called the Gauss-Seidel method. Other alternatives include Jacobi or multigroup Krylov. 
+
+\subsubsection{Eigenvalue Solver}
+In the case of an eigenvalue problem, a final layer of iteration is added to find the eigenvalue, $k$. The $k-$eigenvalue form of the transport equation (Eq. \ref{eq:transport_eigenvalue}) is of the form $\textbf{A}\psi = \frac{1}{k}\psi$ and can be solved via standard eigenvalue solvers. Historically, Power Iteration is the most commonly used eigenvalue solver. Newer methods include Rayleigh Quotient, Arnoldi, and Davidson Iteration. 
+
+The three formulations that are compared, NDA, TG-NDA, and SAAF can be solved using any combination of the solvers listed above. We will explain in detail the solvers that were used in our implementation. 
+\section{Implemented Solvers}
+\subsection{Linear Solver - Conjugate Gradient}
+For our linear solver we used SciPy's implementation of the conjugate gradient method (CG). CG solves the system $\textbf{A}x = b$ assuming $\textbf{A}$ is a real, symmetric, positive-definite matrix. By using the finite element method, we are guaranteed that our matrix $\textbf{A}$ satisfies those constraints, so CG is an applicable method for our problem.  
 \begin{algorithm}
 \caption{Conjugate Gradient}
 \begin{algorithmic}

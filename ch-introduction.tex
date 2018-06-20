@@ -35,10 +35,12 @@ There are two forms of the transport equation that are considered in this work: 
 \subsubsection{Fixed Source Form}
 In the fixed source form, we assume there is no fission and that there is an external neutron source, $Q$.
 
-\begin{align}
- [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \\ \int_0^\infty dE' &\int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E')  +Q \nonumber
+\begin{equation}
+\begin{split}
+ [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \\ \int_0^\infty dE' &\int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E')  +Q 
+\end{split}
  \label{eq:transport_fixed_source}
-\end{align}
+\end{equation}
 
 \subsubsection{$k$-Eigenvalue Form}
 If the chain reaction is self-sustaining and time-independent, the reactor is known as ``critical." To maintain criticality, the asymptotic neutron distribution must not be changing over time. This behavior can be described by a parameter,  $k$, the ratio of neutrons in two successive generations. We scale $\nu$ in Eq. \ref{eq:transport} by $k$ to express the deviation from critical. This gives the following equation,
