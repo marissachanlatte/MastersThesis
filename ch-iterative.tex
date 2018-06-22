@@ -10,7 +10,7 @@ Recall the fixed source transport equation (Eq \ref{eq:transport_fixed_source}).
 In order to be able to treat the problem as a system of linear equations, $b$ must be a constant vector, but we see it is dependent on $\psi$ in the scattering source. To remedy this we choose $\psi$ on the right hand side to be a constant. The method by which we do this, called source iteration, is the next level of iteration, detailed below. Now that $b$ is a constant vector, we are able to perform a linear solve. Solving $\textbf{A}x = b$ is well studied problem, and there are many iterative methods to choose from. Most have already been implemented in forms optimized for performance in various linear algebra libraries such as LAPACK.
 
 \subsubsection{``Inner" Iterations}
-The inner iterations solve the space-angle component for each energy group. As was mentioned above, the scattering term on the right hand side of the transport equation (\ref{eq:transport}) depends on the angular flux, $\psi$, it is often handled by a procedure known as source iteration, also sometimes referred to as the ``inner" iterations. The $\psi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\psi$ is updated with the result of that solve. This continues until the values converge. A more advanced alternative to source iteration that is starting to gain popularity is a Krylov solver. 
+The inner iterations solve the space-angle component for each energy group. As was mentioned above, the scattering term on the right hand side of the transport equation (\ref{eq:transport}) depends on the angular flux, $\psi$. The inner iterations, iterate on a guess of that angular flux so that it can be treated as a constant for the linear solves. The traditional method is called source iteration, which is explained in more detail below. A more advanced alternative to source iteration that is starting to gain popularity is a Krylov solver. 
 
 \subsubsection{Multigroup or ``Outer Iterations"}
 The multigroup iterations solve the energy component. When we have more than one energy group, we solve each group independently, performing source iteration on each one. In doing so, we must include the scattering from all other energy groups to the current group multiplied by the flux of the other groups. When there is no ``upscattering", meaning there is no scattering from a lower energy group to a higher energy group, we can solve each group sequentially, starting with the highest energy group, without any problems. No other groups scatter to group one, the highest energy group, the next group is only dependent on the flux from group one, which we just solved for, and so on. In the case of upscattering, an outer layer of iteration is added to converge the scattering source. The most common multigroup solver is called the Gauss-Seidel method. Other alternatives include Jacobi or multigroup Krylov. 
@@ -21,7 +21,7 @@ In the case of an eigenvalue problem, a final layer of iteration is added to fin
 The three formulations that are compared, NDA, TG-NDA, and SAAF can be solved using any combination of the solvers listed above. We will explain in detail the solvers that were used in our implementation. 
 \section{Implemented Solvers}
 \subsection{Linear Solver - Conjugate Gradient}
-For our linear solver we used SciPy's implementation of the conjugate gradient method (CG). CG solves the system $\textbf{A}x = b$ assuming $\textbf{A}$ is a real, symmetric, positive-definite matrix. By using the finite element method, we are guaranteed that our matrix $\textbf{A}$ satisfies those constraints, so CG is an applicable method for our problem.  
+For our linear solver we used SciPy's implementation of the conjugate gradient method (CG). CG solves the system $\textbf{A}x = b$ assuming $\textbf{A}$ is a real, symmetric, positive-definite matrix. By using the finite element method, we are guaranteed that our matrix $\textbf{A}$ satisfies those constraints, so CG is an applicable method for our problem.  The pseudocode is given below:
 \begin{algorithm}
 \caption{Conjugate Gradient}
 \begin{algorithmic}
@@ -39,7 +39,8 @@ For our linear solver we used SciPy's implementation of the conjugate gradient m
 \end{algorithmic}
 \end{algorithm}
 
-\section{Within Group Solver}
+\subsection{Within Group Solver - Source Iteration}
+The inner solves are handled by a procedure known as source iteration. The $\psi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\psi$ is updated with the result of that solve. This continues until the values converge. 
 \begin{algorithm}
 \caption{Source Iteration}
 \begin{algorithmic}
@@ -53,6 +54,7 @@ For our linear solver we used SciPy's implementation of the conjugate gradient m
 \end{algorithm}
 
 \section{Multigroup Solver}
+When dealing with a multigroup problem, the scattering source is dependent not only on the flux from the current group, but from other groups as well. In the case that there is no upscattering, meaning that the flux from a lower energy group does not contribute to any higher energy group, we can solve sequentially, starting with the highest energy group and using the fluxes as we calculate them. In the case of upscattering, we must choose an initial guess for the fluxes of lower energy groups and then iterate until we find a convergent value. We use a method inspired by the Gauss-Seidel method for linear equations. When iterating, we use the flux calculated in this iteration for the higher energy groups and the flux calculated in the previous iteration for the lower energy groups. The pseudocode of the algorithm is given below. 
 \begin{algorithm}
 \caption{Outer Iterations: Gauss Seidel}
 \begin{algorithmic}
@@ -69,6 +71,7 @@ For our linear solver we used SciPy's implementation of the conjugate gradient m
 \end{algorithm}
 
 \section{Eigenvalue Solver}
+In the case of an eigenvalue problem, we have been holding the flux in the fission source constant thus far. We have already iterated over space and angle, then over the scattering source, and then over energy. We next solve the eigenvalue problem $\textbf{A}\phi = \frac{1}{k}\phi$. Traditional power iteration is given in Algorithm 4. In our implementation we adapt it to the transport equation using a matrix free version. Instead of explicitly storing the matrix, $\textbf{A}$, we use $\phi$ which is  equivalent to the matrix-vector product $\textbf{A}v$.
 \begin{algorithm}
 \caption{Power Iteration - General}
 \begin{algorithmic}
