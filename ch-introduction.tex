@@ -98,8 +98,9 @@ While the assumptions of the diffusion equation greatly simplify the mathematics
   \end{equation}
   where the drift vector $\vec{\bf D}_\rg$ is defined as
   \begin{equation}
-  \vec{\bf D}_\rg= \frac{\sum_{\mrm=1}^M \omega_{\mrm, \rg} [\frac{1}{\sigma_t} \vec{\Omega}_{\mrm, \rg} \vec{\Omega}_{\mrm, \rg} \cdot \nabla\psi_{\mrm, \rg}] - D_\rg \nabla \phi_\rg}{\phi_\rg}\:. \label{eq:drift_vector}
-  \end{equation}
+  \vec{\textbf{D}} (\psi_\rg) = \frac{\sum\limits_{\mrm=1}^M \omega_\mrm [\frac{1}{\sigma_t} \vec{\Omega}_\mrm \vec{\Omega}_\mrm \cdot \nabla\phi_\mrm - D \nabla \sum\limits_{\mrm=1}^M \omega_\mrm\psi_\mrm]}{\sum\limits_{\mrm=1}^M \omega_\mrm \psi_\mrm}.
+  \label{eq:drift_vector}
+  \end{equation} 
  
  The eigenvalue form looks like:
  \begin{equation}

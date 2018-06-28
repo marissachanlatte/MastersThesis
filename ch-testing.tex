@@ -1,52 +1,140 @@
-\section{SAAF Tests}
-We used a number of tests to validate the SAAF code. 
-\subsection{Matrix Properties}
+We used a number of tests to validate the code. 
+\section{Matrix Properties}
 Since we are using a finite element approximation, the left hand side should be symmetric positive definite. I implemented a unit test to check for this property.
 
-\subsection{Hand Calculated Problems}
+\section{Hand Calculated Problems}
 Hand calculated solutions, although tedious to compute, proved to be the most helpful in debugging. I computed solutions to a two element problem (one with a square domain and one rectangular) as well as an eight element problem. These calculations were done in a jupyter notebook that is included with the code. 
 
-\subsection{No Scattering}
-We tested the no scattering case with one material and one energy group. The absorption cross section and the external source were both set to 10. The expected answer was a scalar flux of one everywhere except for the boundaries where it goes to 0. The numerical results are shown below.
+\section{No Scattering}
+We tested the no scattering case with one material and one energy group. The absorption cross section and the external source were both set to 10. The expected answer was a scalar flux of one in the center. The numerical results are shown below.
+\subsubsection{SAAF}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{fig/noscatter_scalar_flux.png}
+    \includegraphics[width=\textwidth]{fig/saaf_noscat.png}
     \caption{Scalar Flux, SAAF Test Problem: $\sigma_s = 0, \sigma_a=10, q=10$}
     \label{fig:SAAF_noscatter}
 \end{figure}
-
-\subsection{Scattering}
-To test the code's ability to handle scattering, we chose a simple test problem. It is known that in the one group case $\phi \approx \frac{q}{\sigma_a}$ should hold in the center and should go to zero at the boundaries. In our test case, the absorption cross section was set to two and the external source was ten. The scalar flux was calculated to be around 4.7 at the center, which is approximately $\frac{q}{\sigma_a}$.
+\subsubsection{Diffusion}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{fig/scattering1g_scalar_flux.png}
+    \includegraphics[width=\textwidth]{fig/diff_noscat.png}
+    \caption{Scalar Flux, Diffusion Test Problem: $\sigma_s = 0, \sigma_a=10, q=10$}
+    \label{fig:diff_noscatter}
+\end{figure}
+\subsubsection{NDA}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/nda_noscat.png}
+    \caption{Scalar Flux, NDA Test Problem: $\sigma_s = 0, \sigma_a=10, q=10$}
+    \label{fig:nda_noscatter}
+\end{figure}
+\subsubsection{TG-NDA}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/tgnda_noscat.png}
+    \caption{Scalar Flux, TG-NDA Test Problem: $\sigma_s = 0, \sigma_a=10, q=10$}
+    \label{fig:tgnda_noscatter}
+\end{figure}
+
+\section{Scattering}
+To test the code's ability to handle scattering, we chose a simple test problem.  In an infinite medium we can assume no gradient, so the diffusion equation will equal $\phi \approx \frac{q}{\sigma_a}$ in the center. In our test, the absorption cross section was set to two and the external source was ten, meaning $\frac{q}{\sigma_a} = 5$. In the test problem, we have a much smaller domain, so there will be leakage, but the flux in the center should still be close to $\frac{q}{\sigma_a}$ We expect a flux of $\approx 5$ in the center. 
+\subsubsection{SAAF}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/saaf_scat.png}
     \caption{Scalar Flux, SAAF Test Problem: $\sigma_s = 8, \sigma_a = 2, q=10$}
     \label{fig:SAAF_scatter}
 \end{figure}
+\subsubsection{Diffusion}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/diff_scat.png}
+    \caption{Scalar Flux, Diffusion Test Problem: $\sigma_s = 8, \sigma_a = 2, q=10$}
+    \label{fig:diff_scatter}
+\end{figure}
+\subsubsection{NDA}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/nda_scat.png}
+    \caption{Scalar Flux, NDA Test Problem: $\sigma_s = 8, \sigma_a = 2, q=10$}
+    \label{fig:tgnda_scatter}
+\end{figure}
+\subsubsection{TG-NDA}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/tgnda_scat.png}
+    \caption{Scalar Flux, TG-NDA Test Problem: $\sigma_s = 8, \sigma_a = 2, q=10$}
+    \label{fig:tgnda_scatter}
+\end{figure}
 
-\section{Solver Tests}
 
-\subsection{Gauss-Seidel}
-To test the Gauss-Seidel scattering acceleration method we use the two group diffusion equation as a benchmark. 
+\section{Multigroup Scattering, No Upscatter}
+To test the Gauss-Seidel multigroup scattering method we use the two group diffusion equation as a benchmark. 
 \begin{align}
  D_1\nabla^2 \phi_1 - \Sigma_{r, 1 \rightarrow 1} \phi_1 + s_1^{'''} &= 0 \\
  D_2\nabla^2 \phi_2 - \Sigma_{r, 2 \rightarrow 2} \phi_2 + s_2^{'''} + \Sigma_{s, 1 \rightarrow 2} \phi_1 &= 0
 \end{align}
 
-where $D_g = \frac{1}{3\Sigma_{t, g}}$ and $\Sigma_{r, g \rightarrow g} = \Sigma_{t, g} - \Sigma_{s, g \rightarrow g}$. It is known that in an infinite medium, the flux should approach $\frac{s_1^{'''}}{\Sigma_{r, 1}}$ in the first energy group and $\frac{s_2^{'''} + \phi_1 \Sigma_{s, 1 \rightarrow 2}}{\Sigma_{r, 2}}$ in the second.  
+where $D_g = \frac{1}{3\Sigma_{t, g}}$ and $\Sigma_{r, g \rightarrow g} = \Sigma_{t, g} - \Sigma_{s, g \rightarrow g}$. In an infinite medium we can assume no gradient, so the flux should approach $\frac{s_1^{'''}}{\Sigma_{r, 1}}$ in the first energy group and $\frac{s_2^{'''} + \phi_1 \Sigma_{s, 1 \rightarrow 2}}{\Sigma_{r, 2}}$ in the second.  
 
 This problem was run with $ s^{'''} = 1$ for both groups, $\Sigma_{s, 1\rightarrow 2} = 11$, $\Sigma_{r, 1} = 2$ and $\Sigma_{r, 2} = 1$ This gives and expected flux of $0.50 $ in the first group and $1.50$ in the second. 
 
-\begin{figure}
+\subsubsection{SAAF}
+\begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{fig/gs_test_scalar_flux_group0.png}
-    \caption{Scalar Flux, Highest Energy Group, Expected Flux = 0.50}
-    \label{fig:gs_g1}
+    \includegraphics[width=\textwidth]{fig/saaf_multi_group0.png}
+    \caption{SAAF Scalar Flux, Highest Energy, Expected Flux = 0.50}
+    \label{fig:SAAF_multi_g1}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{fig/gs_test_scalar_flux_group1.png}
-    \caption{Scalar Flux, Lowest Energy Group, Expected Flux = 1.50}
-    \label{fig:gs_g2}
+    \includegraphics[width=\textwidth]{fig/saaf_multi_group1.png}
+    \caption{SAAF Scalar Flux, Lowest Energy, Expected Flux = 1.50}
+    \label{fig:SAAF_multi_g2}
+\end{figure}
+
+\subsubsection{Diffusion}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/diff_multi_group0.png}
+    \caption{Diffusion Scalar Flux, Highest Energy, Expected Flux = 0.50}
+    \label{fig:diff_multi_g1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/diff_multi_group1.png}
+    \caption{Diffusion Scalar Flux, Lowest Energy, Expected Flux = 1.50}
+    \label{fig:diff_multi_g2}
+\end{figure}
+
+\subsubsection{NDA}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/nda_multi_group0.png}
+    \caption{NDA Scalar Flux, Highest Energy, Expected Flux = 0.50}
+    \label{fig:nda_multi_g1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/nda_multi_group1.png}
+    \caption{NDA Scalar Flux, Lowest Energy, Expected Flux = 1.50}
+    \label{fig:nda_multi_g2}
+\end{figure}
+
+\subsubsection{TG-NDA}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/tgnda_multi_group0.png}
+    \caption{TG-NDA Scalar Flux, Highest Energy, Expected Flux = 0.50}
+    \label{fig:tgnda_multi_g1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/tgnda_multi_group1.png}
+    \caption{TG-NDA Scalar Flux, Lowest Energy, Expected Flux = 1.50}
+    \label{fig:tgnda_multi_g2}
 \end{figure}
