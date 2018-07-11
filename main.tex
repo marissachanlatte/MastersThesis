@@ -10,6 +10,7 @@
 \usepackage[noend]{algpseudocode}
 \usepackage{lmodern}
 \usepackage{todonotes}
+\usepackage[titletoc]{appendix}
 % necessary commands
 \newcommand{\chig}{\chi_\rg}
 \newcommand{\sn}{S$_N$}
@@ -24,7 +25,7 @@
 \newcommand{\rgp}{{\rg'}}
 \title{A Two-Grid, Nonlinear Diffusion Acceleration Method for the $S_N$ Equations with Neutron Upscattering}
 \author{Marissa Ramirez Zweiger }
-\date{June 26th, 2018}
+\date{July 10th, 2018}
 
 \begin{document}
 
@@ -36,17 +37,9 @@
 \label{sec:intro}
 \input{ch-introduction.tex}
 
-\chapter{Derivation of TG-NDA}
+\chapter{Two-Grid, Nonlinear Diffusion Acceleration}
 \label{sec:derivation}
 \input{ch-derivation.tex}
-
-\chapter{The Higher Order Equation: SAAF}
-\label{sec:ho}
-\input{ch-higher-order.tex}
-
-\chapter{The Finite Element Method}
-\label{sec:spatial}
-\input{ch-spatial.tex}
 
 \chapter{Iterative Solvers}
 \label{sec:iterative}
@@ -63,6 +56,12 @@
 \chapter{Future Work}
 \label{sec:future}
 \input{ch-future.tex}
+
+\begin{appendices}
+  \chapter{FEM on an Unstructured Triangular Grid}
+  \label{sec:spatial}
+  \input{ch-spatial.tex}
+\end{appendices}
 
 \bibliography{mybibfile.bib}
 \bibliographystyle{plain}

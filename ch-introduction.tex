@@ -16,7 +16,7 @@ The angular neutron flux of a reactor, $\psi$ can be described by the steady sta
 
 \begin{equation}
 \begin{split}
- [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \chi(E) \int_0^\infty dE' \nu \Sigma_{f}(\vec{r}, E') \int_{4\pi} d\hat{\Omega}', E') \\   &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E')   
+ [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \chi(E) \int_0^\infty dE' \nu \Sigma_{f}(\vec{r}, E') \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}, E') \\   &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E')   
 \end{split}
 \label{eq:transport}
 \end{equation}
@@ -24,13 +24,8 @@ The angular neutron flux of a reactor, $\psi$ can be described by the steady sta
 
 where $\hat{\Omega}$ represents the angle; $\vec{r}$, the position vector; $E$, the energy; $\Sigma$, the total macroscopic cross-section; $\Sigma_f$, the macroscopic fission cross-section; $\Sigma_s$, the macroscopic scattering cross section; $\chi$, the energy distribution; and $\nu$, the average number of neutrons per fission. 
 
-This equation gives the angular flux. To find the scalar flux, $\phi$ we must integrate over all directions.
-\begin{equation}
-    \phi(\vec{r}, E) = \int_{4\pi} \phi(\vec{r}, \hat{\Omega}, E) d \Omega.
-\end{equation}
-
 \subsection{Forms of the Transport Equation}
-There are two forms of the transport equation that are considered in this work: fixed source and $k$-eigenvalue. 
+There are are several forms of the transport equaution that are of interest in the field of nuclear energy. In this work we present all methods in fixed-source form, however they can all be easily extended to $k$-eigenvalue form for criticality calculations. 
 
 \subsubsection{Fixed Source Form}
 In the fixed source form, we assume there is no fission and that there is an external neutron source, $Q$.
@@ -48,77 +43,139 @@ If the chain reaction is self-sustaining and time-independent, the reactor is kn
 \begin{equation}
     \label{eq:transport_eigenvalue}
     \begin{split}
-        [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \frac{\chi(E)}{k} \int_0^\infty dE' \nu \Sigma_{f}(\vec{r}, E') \int_{4\pi} d\hat{\Omega}', E') \\ &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E') 
+        [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \frac{\chi(E)}{k} \int_0^\infty dE' \nu \Sigma_{f}(\vec{r}, E') \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}, E') \\ &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E') 
     \end{split}
 \end{equation}
 
 Eq. \ref{eq:transport_eigenvalue} is simply an eigenvalue problem that with some algebraic manipulation can be thought of in the form $A\psi = \frac{1}{k} \psi$ and solved via standard eigenvalue solvers. 
 
-\section{Methods of Discretization}
-The angular flux, $\psi$, is a function of space, angle, and energy. In the solution process, each one of those dimensions is discretized. There are several choices that have to be made when choosing discretizations. In this work, we endeavor to show equation forms that are discretization agnostic as well as showing formulations unique to the particular discretization methods we chose to implement. 
-\subsection{Spatial Discretization}
-In this work, we choose to discretize in two dimensions, assuming uniformity in the third, however all formulations could be extended to be truly 3D. Spatial discretization methods for the transport equation is usually performed using commonly known differential equation discretization techniques such as the finite difference, finite volume, or finite element methods. In this work we discretize using the finite element method (described in detail in section \ref{sec:spatial}, however the form of TG-NDA given can be used with any spatial discretization. 
+\section{Useful Approximations}
+In this work we are primarily concerned with the fixed source form of the transport equation, although all of our methods can be used with the eigenvalue form by replacing the fixed source $Q$ with $\frac{1}{k}\nu\Sigma_f$. For ease we assume our scattering and fixed sources are isotropic, which gives the following form
 
-\subsection{Angular Discretization}
-The angular flux is converted to a scalar flux by integrating over all dimensions. Numerically, we cannot integrate over \textit{all} dimensions, so instead a numerical quadrature is performed by choosing certain angles to be representative. \todo{Add more information about different angular quadrature sets} To perform this quadrature, we use the discrete ordinates method. The general $S_N$ equation for obtaining scalar flux from angular flux is
-\begin{equation}
-    \phi = \sum\limits_{m=1}^{M}\psi_m w_m
-\end{equation}
-where $m$ is the angular index and $w_m$ is the quadrature weight associated with the $m$'th quadrature cosine $\mu_m$. We are using a $S_4$ quadrature which has weights of $\frac{1}{3}$ for every $\mu_m$.
-
-\subsection{Energy Discretization}
-In our treatment of energy, we divide the full energy spectrum into several energy groups. By convention, the highest energy group is given the index, 1, with the index number going up until it reaches the lowest energy group. \todo{Figure out where xs data is coming from. Add more}
-
-\section{Approximations to the Transport Equation}
-The transport equation requires a significant amount of computational power to solve, so often simpler approximations are used in its place. Here we will introduce the three that are most relevant to this work.
-
-\subsection{Neutron Diffusion}
-The diffusion equation is one of the most commonly used approximations. It is derived by integrating over all angles in the transport equation. We assume the scattering term is symmetric azimuthally, and both the scattering and angular flux are linearly anisotropic. Those assumptions give the following fixed source form:
 \begin{equation}
 \begin{split}
- - \nabla \cdot D(\vec{r}, E)\nabla\phi(\vec{r}, E, t) &+ \Sigma_r \phi(\vec{r}, E, t) = Q
+ [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \\  \int_0^\infty \frac{1}{4\pi} &\Sigma_s(\vec{r}, E' \rightarrow E)  dE' \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}', E')  + \frac{1}{4\pi}Q 
+\end{split}
+ \label{eq:transport_isotropic_scattering}
+\end{equation}
+
+
+This equation gives the angular flux. To find the scalar flux, $\phi$ we must integrate over all directions.
+\begin{equation}
+    \phi(\vec{r}, E) = \int_{4\pi} \phi(\vec{r}, \hat{\Omega}, E) d \Omega.
+\end{equation}
+
+\subsection{The Diffusion Equation}
+To simplify even further, we derive another approximation. Assuming all neutrons have the same energy, consider the neutron balance within an infinitesimal volume centered at a point r. Under steady state conditions, neutron conservation requires
+
+\begin{equation}
+    \textit{neutrons leaking out} + \textit{neutrons absorbed} = \textit{source neutrons emitted}.
+\end{equation}
+We describe the neutrons leaking out as the rate of the current, $J$, in all directions, the neutrons absorbed is the absorption cross section times the scalar flux, $\Sigma_a\phi$, and the source neutrons are represented by the source variable, $Q$. 
+\begin{equation}
+    \vec{\nabla}\cdot \vec{J}(\vec{r}) + \Sigma_a(\vec{r})\phi(\vec{r}) = Q(\vec{r})
+\end{equation}
+Using Fick's Law which relates the current to the flux, $\vec{J}(\vec{r}) = -D(\vec{r})\vec{\nabla}\phi(\vec{r})$ where $D = 1/3\Sigma_t$, we get the diffusion approximation
+
+\begin{equation}
+\begin{split}
+ - \nabla \cdot D(\vec{r})\nabla\phi(\vec{r}) &+ \Sigma_a \phi(\vec{r}) = Q(\vec{r}).
 \end{split}
 \label{eq:diffusion_fixed_source}
 \end{equation}
-where $D$, known as the diffusion coefficient, is equal to $\frac{1}{3\Sigma_t}$, $\Sigma_r = \Sigma_t - \Sigma_{s, g \rightarrow g}$ and $g$ represents the group index. 
 
-The $k$-eigenvalue form of the equation is given as:
-\begin{equation}
-    \begin{split}
-         - \nabla \cdot D(\vec{r}, E)\nabla\phi(\vec{r}, E, t) + \Sigma_r \phi(\vec{r}, E, t) =  \frac{\chi}{k}\nu\Sigma_f\phi(\vec{r}, E, t) 
-    \end{split}
-    \label{eq:diffusion_eigenvalue}
-\end{equation}
+While the diffusion equation is much easier to solve, due to the assumptions made in the Fick's Law approximation, it is not valid near boundaries where material properties change dramatically, near localized sources, or in strongly absorbing media. 
 
-\subsection{Nonlinear Diffusion Acceleration}
-While the assumptions of the diffusion equation greatly simplify the mathematics, they do not always accurately represent the physics of a reactor. Nonlinear Diffusion Acceleration, the approximation on which this work is based, improves on the accuracy of diffusion by introducing a corrective term called the drift vector. The fixed source is given 
+\subsection{Nonlinear Diffusion Accelration}
+This work presents an acceleration to a method known as Nonlinear Diffusion Acceleration. It reformulates the transport equation as a correction the Diffusion equation and uses a two step process to solve. For reference, we repeat the derivation of the low-order NDA equation found in \cite{morel-holo} with small modifications assuming no fission source and vacuum boundary conditions. Consider the first order, one-group, fixed-source, steady-state \sn transport equation with isotropic scattering. 
 
-\begin{equation}
-  \nabla\cdot(-D_\rg \nabla \varphi_\rg - \vec{\bf D}_\rg \varphi_\rg) + \sigma_{r,\rg} \varphi_\rg = \sum\limits_{\rgp\neq\rg}\sigma_{\mm{s},\rg' \rightarrow \rg}\varphi_{\rg'} + Q_\rg(\vec{r}) \:, \label{eq:NDA_fixed_source}
-  \end{equation}
-  where the drift vector $\vec{\bf D}_\rg$ is defined as
   \begin{equation}
-  \vec{\textbf{D}} (\psi_\rg) = \frac{\sum\limits_{\mrm=1}^M \omega_\mrm [\frac{1}{\sigma_t} \vec{\Omega}_\mrm \vec{\Omega}_\mrm \cdot \nabla\phi_\mrm - D \nabla \sum\limits_{\mrm=1}^M \omega_\mrm\psi_\mrm]}{\sum\limits_{\mrm=1}^M \omega_\mrm \psi_\mrm}.
-  \label{eq:drift_vector}
-  \end{equation} 
- 
- The eigenvalue form looks like:
- \begin{equation}
-  \nabla\cdot(-D_\rg \nabla \varphi_\rg - \vec{\bf D}_\rg \varphi_\rg) + \sigma_{r,\rg} \varphi_\rg = \sum\limits_{\rgp\neq\rg}\sigma_{\mm{s},\rg' \rightarrow \rg}\varphi_{\rg'} +  \frac{\chig}{k} \sum\limits_{\rg'=1}^\mm{G} \nu \sigma_{\mm{f},\rg'}\left(\vec{r}\right) \varphi_\rgp\left(\vec{r}\right) \:, \label{eq:NDA_eigenvalue}
+  \vec{\Omega}\cdot \vec{\nabla} \psi \left(\vec{r}\right)+ \Sigma_{\mm{t}}\left(\vec{r}\right)\psi = \frac{1}{4 \pi} \Sigma_{\mm{s}}\left(\vec{r}\right) \phi\left(\vec{r}\right) + \frac{1}{4 \pi} Q\:.
   \end{equation}
+Integrate over all angles to obtain the zeroth moment equation
+\begin{equation}
+  \vec{\nabla} \cdot \vec{J} + \Sigma_a\phi  =  Q
+  \label{eq:zeroth_moment_1g}
+  \end{equation}
+where $\vec{J} = \int_{4\pi} \vec{\Omega}\psi$ and $\Sigma_a$ is the absorption cross section.   Now consider the first moment equation:
+  \begin{equation}
+  \vec{\nabla} \cdot P + \Sigma_t J = 0
+  \end{equation}
+where $\vec{\nabla} \cdot P =  \int_{4\pi} \vec{\Omega} \vec{\Omega} \cdot \vec{\nabla} \psi$. It can be rewritten as: 
 
+  \begin{equation}
+  J= -\frac{1}{\Sigma_t} \vec{\nabla} \cdot P. 
+  \end{equation}
+  By adding and subtracting the diffusion coefficient, $D = \frac{1}{3\Sigma_t}$, times the gradient of the flux, it takes the form of a correction to Fick's Law. 
+  \begin{equation}
+  J = -D \vec{\nabla} \phi + D \vec{\nabla} \phi - \frac{1}{\Sigma_t} \vec{\nabla} P \\
+  = -D \vec{\nabla} \phi - \vec{\textbf{D}} \phi
+  \label{eq:fick_corr_1g}
+  \end{equation}
+  where 
+ \begin{equation}
+  \vec{\textbf{D}} (\psi) = \frac{\int_{4\pi} [\frac{1}{\Sigma_t} \vec{\Omega}_\mrm \vec{\Omega}_\mrm \cdot \vec{\nabla}\psi^{ho}_\mrm] - D \vec{\nabla} \phi^{ho}}{\phi^{ho}}.
+  \end{equation} 
+Where $\psi^{ho}$ indicates the solution of the higher order equation. Plugging \eqref{eq:fick_corr_1g} into \eqref{eq:zeroth_moment_1g} we have the following NDA equation:
+  \begin{equation}
+  \vec{\nabla}\cdot(-D \vec{\nabla} \phi - \vec{\bf D} \phi) + \Sigma_a \phi = Q \:. \label{eq:NDA_1g}
+  \end{equation}
+The implementation of the algorithm  is outlined in Algorithm \eqref{alg:NDA}.
+
+\begin{algorithm}
+\caption{Nonlinear Diffusion Acceleration}
+\begin{algorithmic}
+    \State Initialize system, setting drift vector, $\vec{\textbf{D}}$, to 0
+    \State Solve the low-order linear system to get $\phi^0$
+    \While{$res > tol$}
+        \State Use low-order solution as $\phi$ in high-order system
+        \State Solve higher order system for, $\psi^l$
+        \State Calculate drift vector and boundary coefficients using $\psi^l$
+        \State Solve low-order system for $\phi^l$
+        \State $res \gets || \phi^l - \phi^{l-1} ||$
+    \EndWhile
+    \State \textbf{return} $\phi$
+\end{algorithmic}
+\label{alg:NDA}
+\end{algorithm}
 \subsection{Self-Adjoint Angular Flux}
-In calculating the drift vector in the NDA equations, we use the scalar flux calculated by a ``higher-order equation." In this case, we will be using the Self-Adjoint Angular Flux Equation (SAAF) \cite{saaf} as our higher order equation. 
+In calculating the drift vector in the NDA equations, we use the scalar flux calculated by a ``higher-order equation." In this case, we will be using the Self-Adjoint Angular Flux Equation (SAAF) \cite{saaf} as our higher order equation, which is a reformulation of the transport equation that is more suitable for numerical linear solvers. 
 
 The monoenergetic version of the Self-Adjoint Angular Flux equation appropriate for $S_n$ calculations is as follows:
 \begin{equation}
-    - \vec{\Omega} \cdot \vec{\nabla}\frac{1}{\sigma_t}\vec{\Omega} \cdot \vec{\nabla} \psi + \sigma_t \psi = S\psi + q - \vec{\Omega} \cdot \vec{\nabla} \frac{(S\psi + q)}{\sigma_t}
+    - \vec{\Omega} \cdot \vec{\nabla}\frac{1}{\sigma_t}\vec{\Omega} \cdot \vec{\nabla} \psi + \sigma_t \psi = S\psi + Q - \vec{\Omega} \cdot \vec{\nabla} \frac{(S\psi + Q)}{\sigma_t}
     \label{eq:SAAF}
 \end{equation}
-Where $\vec{\Omega}$ are the angles, $\sigma_t$ is the total cross section, $\psi$ is the angular flux, $S\psi$ is the scattering source, and $q$ is the fixed source (for ease, we write $S\psi + q$ as $Q$ to represent the total source.
+Where $\vec{\Omega}$ are the angles, $\sigma_t$ is the total cross section, $\psi$ is the angular flux, $S\psi$ is the scattering source, and $Q$ is the fixed source.
 
-The eigenvalue formulation is
-\begin{equation}
-        - \vec{\Omega} \cdot \vec{\nabla}\frac{1}{\sigma_t}\vec{\Omega} \cdot \vec{\nabla} \psi + \sigma_t \psi = S\Psi + \frac{1}{k}\frac{\chi}{4\pi}\nu\sigma_f\phi - \vec{\Omega} \cdot \vec{\nabla} \frac{(S\Psi + \frac{1}{k}\frac{\chi}{4\pi}\nu\sigma_f\phi)}{\sigma_t}
-    \label{eq:SAAF-eigenvalue}
-\end{equation}
+\section{Methods of Discretization}
+The angular flux, $\psi$, is a function of space, angle, and energy. In the solution process, each one of those dimensions is discretized. There are several choices that have to be made when choosing discretizations. In this work, we endeavor to show equation forms that are discretization agnostic as well as showing formulations unique to the particular discretization methods we chose to implement. 
+
+\subsection{Energy Discretization}
+In our treatment of energy, we divide the full energy spectrum into several energy groups. By convention, the highest energy group is given the index, 1, with the index number going up until it reaches the lowest energy group. In expanding to multiple energy groups, we must take into account scattering from one group, $\rg'$ to another, $\rg$, denoted as $\rg' \rightarrow \rg $. The cross sections we use in our experiments were generated using NJOY from ENDF data.
+
+The energy discretized, steady-state, transport equation is
+
+ \begin{equation}
+  \vec{\Omega} \cdot \vec{\nabla} \psi_\rg \left(\vec{r}\right)+ \Sigma_{\mm{t}, \rg}\left(\vec{r}\right)\psi_\rg = \frac{1}{4 \pi} \sum\limits_{\rg'=1}^{G}\Sigma_{\mm{s}, \rg' \rightarrow \rg}\left(\vec{r}\right) \phi_\rg\left(\vec{r}\right) + \frac{1}{4 \pi} Q_\rg.
+  \label{eq:transport-energy}
+ \end{equation}
+
+\subsection{Angular Discretization}
+
+Angular discretization on the left hand side of \eqref{eq:transport} is handled via the discrete ordinates ($S_N$) method, a finite-element collocation method \cite{exnihilo}. We assume the sources are isotropic and do not perform any additional expansion, however they can be expanded via Spherical Harmonics and the methods will still hold. 
+
+The $S_N$ method evaluates the equation at number of discrete angles or ``ordinates" and then sums over all angles with their given weights to perform a quadrature. We use a Gauss-Chebyshev, Level-Symmetric quadrature. In 2D, Level-Symmetric quadrature requires that the ordinates be rotationally symmetric about two axes for each quadrant. There are $n+2$ directions in each quadrant. The Gauss-Chebyshev set of nodes are calculated using a one-dimensional Gaussian polar quadrature. The ``Chebyshev" comes from the quadrature in the azimuthal variable, but as we our test problems are in 2D, this is unnecessary. 
+
+The discretized, steady-state, $S_N$ transport equation is given as follows,
+
+ \begin{equation}
+  \vec{\Omega}_\mrm \cdot \vec{\nabla} \psi_\mrm \left(\vec{r}\right)+ \Sigma_{\mm{t}}\left(\vec{r}\right)\psi_\mrm = \frac{1}{4 \pi} \Sigma_{\mm{s}}\left(\vec{r}\right) \phi\left(\vec{r}\right) + \frac{1}{4 \pi} Q
+  \label{eq:transport-angular}
+ \end{equation}
+where $\mrm$ is the angular index and $\phi = \sum\limits_{\mrm=1}^M \omega_\mrm \psi_m$.
+\subsection{Spatial Discretization}
+In this work, we choose to discretize in two dimensions, assuming uniformity in the third, however all formulations could be extended to be truly 3D. Spatial discretization methods for the transport equation is usually performed using commonly known differential equation discretization techniques such as the finite difference, finite volume, or finite element methods. In this work we discretize using the finite element method (described in detail in Appendix \ref{sec:spatial}), however the form of TG-NDA given can be used with any spatial discretization. 
+
+
+
