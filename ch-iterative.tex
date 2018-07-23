@@ -16,9 +16,6 @@ The inner iterations solve the space-angle component for each energy group. As w
 \subsubsection{Multigroup or ``Outer Iterations"}
 The multigroup iterations solve the energy component. When we have more than one energy group, we solve each group independently, performing source iteration on each one. In doing so, we must include the scattering from all other energy groups to the current group multiplied by the flux of the other groups. When there is no ``upscattering", meaning there is no scattering from a lower energy group to a higher energy group, we can solve each group sequentially, starting with the highest energy group, without any problems. No other groups scatter to group one, the highest energy group, the next group is only dependent on the flux from group one, which we just solved for, and so on. In the case of upscattering, an outer layer of iteration is added to converge the scattering source. The most common multigroup solver is called the Gauss-Seidel method. Other alternatives include Jacobi or multigroup Krylov. 
 
-\subsubsection{Eigenvalue Solver}
-In the case of an eigenvalue problem, a final layer of iteration is added to find the eigenvalue, $k$. The $k-$eigenvalue form of the transport equation (Eq. \ref{eq:transport_eigenvalue}) is of the form $\textbf{A}\psi = \frac{1}{k}\psi$ and can be solved via standard eigenvalue solvers. Historically, Power Iteration is the most commonly used eigenvalue solver. Newer methods include Rayleigh Quotient, Arnoldi, and Davidson Iteration. 
-
 The three formulations that are compared, NDA, TG-NDA, and SAAF can be solved using any combination of the solvers listed above. We will explain in detail the solvers that were used in our implementation. 
 \section{Implemented Solvers}
 \subsection{Linear Solver - Conjugate Gradient}
