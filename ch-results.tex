@@ -1,5 +1,33 @@
 \section{One Material}
 For the first test problem we used a single material with significant upscattering throughout the domain with a constant source. 
+\subsection{Cross Sections}
+For experimentation purposes, we created a fake seven group material with significant upscattering. The scattering block is given below.
+\begin{table}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    & g'=1 & g'=2 & g'=3 & g'=4 & g'=5 & g'=6 & g'=7  \\
+    \hline    
+    g = 1 & 10 & 1 & 1 & 1 & 0 & 0 & 0  \\
+    \hline    
+    g = 2 & 0 & 10 & 1 & 1 & 1 & 0 & 0  \\
+    \hline    
+    g = 3 & 0 & 0 & 10 & 1 & 1 & 1 & 0  \\
+    \hline    
+    g = 4 & 0 & 0 & 0 & 10 & 1 & 1 & 1  \\
+    \hline    
+    g = 5 & 0 & 0 & 0 & 1 & 10 & 1 & 1  \\
+    \hline    
+    g = 6 & 0 & 0 & 0 & 1 & 1 & 10 & 1  \\
+    \hline    
+    g = 7 & 0 & 0 & 0 & 1 & 1 & 1 & 10  \\
+    \hline
+    \end{tabular}
+\end{center}
+\caption{Scattering Matrix for Test Material}
+\end{table}
+\subsection{Timing Results}
+We ran the problems three times on a single processor of a MacBook Pro. 
 \begin{center}
     \begin{tabular}{|c|c|c|}
     \hline
@@ -11,3 +39,10 @@ For the first test problem we used a single material with significant upscatteri
     \end{tabular}
 \end{center}
 \section{Two Materials}
+The second problem consists of two materials in a concentric geometry with a box source in the center. 
+\begin{figure}
+    \centering
+    \includegraphics[width=.3\textwidth]{fig/Geometry.png}
+    \caption{Geometry of Two-Material Test Problem}
+    \label{fig:test_geometry}
+\end{figure}

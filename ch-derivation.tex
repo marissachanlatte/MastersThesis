@@ -30,7 +30,7 @@ where $\nabla P =  \Omega_{m,g} \Omega_{m,g} \nabla \psi_{g}$. It can be rewritt
  \begin{equation}
   \vec{\textbf{D}} (\psi_\rg) = \frac{\sum\limits_{\mrm=1}^M \omega_\mrm [\frac{1}{\sigma_t} \vec{\Omega}_\mrm \vec{\Omega}_\mrm \cdot \nabla\phi_\mrm - D \nabla \sum\limits_{\mrm=1}^M \omega_\mrm\psi_\mrm]}{\sum\limits_{\mrm=1}^M \omega_\mrm \psi_\mrm}.
   \end{equation} 
- Plugging \ref{eq:fick_corr} into \ref{eq:zeroth_moment} we have the following NDA equation:
+ Substituting \eqref{eq:fick_corr} in \eqref{eq:zeroth_moment} we have the following NDA equation:
   \begin{equation}
   \nabla\cdot(-D_\rg \nabla \phi_\rg - \vec{\bf D}_\rg \phi_\rg) + \sigma_{r,\rg} \phi_\rg = \sum\limits_{\rgp\neq\rg}\sigma_{\mm{s},\rg' \rightarrow \rg}\phi_{\rg'} + Q_\rg \:. \label{eq:NDA}
   \end{equation}
@@ -49,6 +49,20 @@ where $\nabla P =  \Omega_{m,g} \Omega_{m,g} \nabla \psi_{g}$. It can be rewritt
   \begin{equation}
   \epsilon_\rg^{k+1/2} = \phi_{\epsilon}^{k+1/2}\left(\vec{r}\right)\xi_\rg, \hspace{5mm} \sum\limits_{\rg=1}^G \xi_\rg = 1.
   \end{equation}
+  
+  We calculate $\xi$ using the procedure outlined in \cite{evans-upscat}. Performing a Fourier analysis of the Gauss-Seidel iteration process, assuming isotropic scattering in an infinite medium, gives the following eigenproblem. 
+  \begin{equation}
+      (\textbf{T} - \textbf{S}_L - \textbf{S}_D)^{-1}\textbf{S}_U \xi = \rho(\lambda)\xi,
+  \end{equation}
+  where
+  \begin{align*}
+      \textbf{T} &= diag(\textbf{T}) =  \text{matrix of total cross sections by group} \\
+      \textbf{S}_L &= lower(\textbf{S}) = \text{zeroth moments of the downscattering cross sections} \\
+      \textbf{S}_D &= diag(\textbf{S}) = \text{zeroth moments of within group scattering cross sections} \\
+      \textbf{S}_U &= upper(\textbf{S}) = \text{zeroth moments of the upscattering cross sections.}
+  \end{align*}
+  $\rho(\lambda)$ represents the eigenvalues of the system. $\xi$ is the eigenvector. The $\xi$ we are interested in is the eigenvector corresponding to the maximum eigenvalue of the system. $\xi_\rg$ is the $\rg$-th entry of that eigenvector. $\xi$ is material dependent and is recaluculated for each material in the problem.
+  \par
   Subtracting Eq.\ \eqref{eq:k1/2}\ from Eq.\ \eqref{eq:NDA}\ and adding and subtracting $R_\rg^{k+1/2}$\ gives an exact formulation of the error, but for the sake of efficiency, we approximate the error using the following diffusion approximation:
   \begin{equation}
   \nabla\cdot(-D_\rg  \nabla \epsilon_\rg^{k+1/2} - \vec{\bf D}_\rg
