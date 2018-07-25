@@ -1,48 +1,61 @@
 \section{One Material}
-For the first test problem we used a single material with significant upscattering throughout the domain with a constant source. 
-\subsection{Cross Sections}
-For experimentation purposes, we created a fake seven group material with significant upscattering. The scattering block is given below.
-\begin{table}
-\begin{center}
-    \begin{tabular}{|c|c|c|c|c|c|c|c|}
-    \hline
-    & g'=1 & g'=2 & g'=3 & g'=4 & g'=5 & g'=6 & g'=7  \\
-    \hline    
-    g = 1 & 10 & 1 & 1 & 1 & 0 & 0 & 0  \\
-    \hline    
-    g = 2 & 0 & 10 & 1 & 1 & 1 & 0 & 0  \\
-    \hline    
-    g = 3 & 0 & 0 & 10 & 1 & 1 & 1 & 0  \\
-    \hline    
-    g = 4 & 0 & 0 & 0 & 10 & 1 & 1 & 1  \\
-    \hline    
-    g = 5 & 0 & 0 & 0 & 1 & 10 & 1 & 1  \\
-    \hline    
-    g = 6 & 0 & 0 & 0 & 1 & 1 & 10 & 1  \\
-    \hline    
-    g = 7 & 0 & 0 & 0 & 1 & 1 & 1 & 10  \\
-    \hline
-    \end{tabular}
-\end{center}
-\caption{Scattering Matrix for Test Material}
-\end{table}
-\subsection{Timing Results}
-We ran the problems three times on a single processor of a MacBook Pro. 
+For the first test problem we used a single material with  upscattering throughout a 20 by 20 domain with a constant source. We used cross sections for the seven group moderator material in the C5G7 benchmark problem. \cite{C5G7}.  
+% \subsection{Cross Sections}
+% For experimentation purposes, we created a fake seven group material with significant upscattering. The scattering block is given below.
+% \begin{table}
+% \begin{center}
+%     \begin{tabular}{|c|c|c|c|c|c|c|c|}
+%     \hline
+%     & g'=1 & g'=2 & g'=3 & g'=4 & g'=5 & g'=6 & g'=7  \\
+%     \hline    
+%     g = 1 & 10 & 1 & 1 & 1 & 0 & 0 & 0  \\
+%     \hline    
+%     g = 2 & 0 & 10 & 1 & 1 & 1 & 0 & 0  \\
+%     \hline    
+%     g = 3 & 0 & 0 & 10 & 1 & 1 & 1 & 0  \\
+%     \hline    
+%     g = 4 & 0 & 0 & 0 & 10 & 1 & 1 & 1  \\
+%     \hline    
+%     g = 5 & 0 & 0 & 0 & 1 & 10 & 1 & 1  \\
+%     \hline    
+%     g = 6 & 0 & 0 & 0 & 1 & 1 & 10 & 1  \\
+%     \hline    
+%     g = 7 & 0 & 0 & 0 & 1 & 1 & 1 & 10  \\
+%     \hline
+%     \end{tabular}
+% \end{center}
+% \caption{Scattering Matrix for Test Material}
+% \end{table}
+The problems were run on a single processor of a MacBook Pro. 
 \begin{center}
     \begin{tabular}{|c|c|c|}
     \hline
     & Runtime (s) & GS Iterations \\
     \hline
-    TG-NDA & 2850.48293 & 7 \\
-    NDA & 4352.18865 & 11 \\
+    TG-NDA & 5465.00732 & 9 \\
+    NDA & 14513.23 & 31 \\
     \hline
     \end{tabular}
 \end{center}
+The two-grid method provides a considerable acceleration of the Gauss-Seidel method. While when using TG-NDA each iteration takes slightly longer as the correction term must be calculated, it more than makes up for it with a considerable decrease in the number of iterations necessary to reach convergence. 
 \section{Two Materials}
-The second problem consists of two materials in a concentric geometry with a box source in the center. 
+The second problem consists of two materials in a concentric geometry with a box source in the center. The first material, located in the center and outer layer, is the C5G7 moderator material used above and the second material has the same total cross sections and pattern of upscatter, but with higher absorption and lower total scattering. Both materials have seven groups. There is a box source in the center that emits 70\% in the highest energy group, 20\% in the second highest, and 10\% in the third.
 \begin{figure}
     \centering
     \includegraphics[width=.3\textwidth]{fig/Geometry.png}
     \caption{Geometry of Two-Material Test Problem}
     \label{fig:test_geometry}
 \end{figure}
+
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+    \hline
+    & Runtime (s) & GS Iterations \\
+    \hline
+    TG-NDA & 4221.92 & 8 \\
+    NDA & 10381.52 & 25 \\
+    \hline
+    \end{tabular}
+\end{center}
+
+Again, TG-NDA showed a significant improvement over the unaccelerated Gauss Seidel, taking roughly a third of the number of iterations. 
