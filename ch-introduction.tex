@@ -73,9 +73,9 @@ To simplify even further, we employ a commonly used approximation known as the d
 \end{equation}
 We describe the neutrons leaking out as the rate of the current, $J$, in all directions, the neutrons absorbed is the absorption cross section times the scalar flux, $\Sigma_a\phi$, and the source neutrons are represented by the source variable, $Q$. 
 \begin{equation}
-    \vec{\nabla}\cdot \vec{J}(\vec{r}) + \Sigma_a(\vec{r})\phi(\vec{r}) = Q(\vec{r})
+    \nabla\cdot \vec{J}(\vec{r}) + \Sigma_a(\vec{r})\phi(\vec{r}) = Q(\vec{r})
 \end{equation}
-Using Fick's Law which relates the current to the flux, $\vec{J}(\vec{r}) = -D(\vec{r})\vec{\nabla}\phi(\vec{r})$ where $D = 1/3\Sigma_t$, we get the diffusion approximation
+Using Fick's Law which relates the current to the flux, $\vec{J}(\vec{r}) = -D(\vec{r})\nabla\phi(\vec{r})$ where $D = 1/3\Sigma_t$, we get the diffusion approximation
 
 \begin{equation}
 \begin{split}
@@ -86,49 +86,50 @@ Using Fick's Law which relates the current to the flux, $\vec{J}(\vec{r}) = -D(\
 
 While the diffusion equation is much easier to solve, due to the assumptions made in the Fick's Law approximation, it is not valid near boundaries where material properties change dramatically, near localized sources, or in strongly absorbing media \cite{lewis-miller}.
 
-\subsection{Nonlinear Diffusion Accelration}
+\subsection{Nonlinear Diffusion Acceleration}
 This work presents an acceleration to a method known as Nonlinear Diffusion Acceleration (NDA). NDA reformulates the transport equation as a correction to the diffusion equation and uses a two step process to solve. For reference, we repeat the derivation of the low-order NDA equation found in \cite{morel-holo} with small modifications assuming no fission source and vacuum boundary conditions. Consider the first order, one-group, fixed-source, steady-state \sn transport equation with isotropic scattering. 
 
   \begin{equation}
-  \vec{\Omega}\cdot \vec{\nabla} \psi \left(\vec{r}\right)+ \Sigma_{\mm{t}}\left(\vec{r}\right)\psi = \frac{1}{4 \pi} \Sigma_{\mm{s}}\left(\vec{r}\right) \phi\left(\vec{r}\right) + \frac{1}{4 \pi} Q\:.
+  \vec{\Omega}\cdot \nabla \psi \left(\vec{r}\right)+ \Sigma_{\mm{t}}\left(\vec{r}\right)\psi = \frac{1}{4 \pi} \Sigma_{\mm{s}}\left(\vec{r}\right) \phi\left(\vec{r}\right) + \frac{1}{4 \pi} Q\:.
   \end{equation}
 Integrate over all angles to obtain the zeroth moment equation
 \begin{equation}
-  \vec{\nabla} \cdot \vec{J} + \Sigma_a\phi  =  Q
+  \nabla \cdot \vec{J} + \Sigma_a\phi  =  Q
   \label{eq:zeroth_moment_1g}
   \end{equation}
 where $\vec{J} = \int_{4\pi} \vec{\Omega}\psi$ and $\Sigma_a$ is the absorption cross section.   Now consider the first moment equation:
   \begin{equation}
-  \vec{\nabla} \cdot P + \Sigma_t J = 0
+  \nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P} + \Sigma_t J = 0
   \end{equation}
-where $\vec{\nabla} \cdot P =  \int_{4\pi} \vec{\Omega} \vec{\Omega} \cdot \vec{\nabla} \psi$. It can be rewritten as: 
+where $\nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P} =  \int_{4\pi} \vec{\Omega} \vec{\Omega} \cdot \nabla \psi$. It can be rewritten as: 
 
   \begin{equation}
-  J= -\frac{1}{\Sigma_t} \vec{\nabla} \cdot P. 
+  J= -\frac{1}{\Sigma_t} \nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P}. 
   \end{equation}
   By adding and subtracting the diffusion coefficient, $D = \frac{1}{3\Sigma_t}$, times the gradient of the flux, it takes the form of a correction to Fick's Law. 
   \begin{equation}
-  J = -D \vec{\nabla} \phi + D \vec{\nabla} \phi - \frac{1}{\Sigma_t} \vec{\nabla} P \\
-  = -D \vec{\nabla} \phi - \vec{\textbf{D}} \phi
+  J = -D \nabla \phi + D \nabla \phi - \frac{1}{\Sigma_t} \nabla \overset{\text{\scriptsize$\leftrightarrow$}}{P} \\
+  = -D \nabla \phi - \vec{\textbf{D}} \phi
   \label{eq:fick_corr_1g}
   \end{equation}
   where 
  \begin{equation}
-  \vec{\textbf{D}} (\psi) = \frac{\int_{4\pi} [\frac{1}{\Sigma_t} \vec{\Omega}_\mrm \vec{\Omega}_\mrm \cdot \vec{\nabla}\psi^{ho}_\mrm] - D \vec{\nabla} \phi^{ho}}{\phi^{ho}}.
+  \vec{\textbf{D}} (\psi) = \frac{\int_{4\pi} [\frac{1}{\Sigma_t} \vec{\Omega} \vec{\Omega}\cdot \nabla \psi] - D \nabla \phi^{ho}}{\phi^{ho}}.
   \label{eq:drift_vector}
   \end{equation} 
-Where $\psi^{ho}$ indicates the solution of the higher order equation. Plugging \eqref{eq:fick_corr_1g} into \eqref{eq:zeroth_moment_1g} we have the following NDA equation:
+Where $\psi^{ho} = \int_{4\pi} \psi(\Omega, \vec{r}) d\Omega$ where $\psi$ is the solution of the higher order equation. Plugging \eqref{eq:fick_corr_1g} into \eqref{eq:zeroth_moment_1g} we have the following NDA equation:
   \begin{equation}
-  \vec{\nabla}\cdot(-D \vec{\nabla} \phi - \vec{\bf D} \phi) + \Sigma_a \phi = Q \:. \label{eq:NDA_1g}
+  \nabla\cdot(-D \nabla \phi - \vec{\bf D} \phi) + \Sigma_a \phi = Q \:. \label{eq:NDA_1g}
   \end{equation}
   
- 
+Because NDA uses the solution from a higher-order in calculating the drift vector, it will not give an exact correction. While NDA maintains much of the accuracy of the higher-order equation when compared to diffusion, the two are not exactly equal. 
+
 \subsection{Self-Adjoint Angular Flux}
 In calculating the drift vector in the NDA equations, we use the scalar flux calculated by a ``higher-order equation." In this case, we will be using the Self-Adjoint Angular Flux Equation (SAAF) \cite{saaf} as our higher order equation. It is a reformulation of the transport equation that is more suitable for numerical linear solvers. 
 
 The monoenergetic version of the Self-Adjoint Angular Flux equation appropriate for $S_n$ calculations is as follows:
 \begin{equation}
-    - \vec{\Omega} \cdot \vec{\nabla}\frac{1}{\Sigma_t}\vec{\Omega} \cdot \vec{\nabla} \psi + \Sigma_t \psi = \Sigma_s\phi + Q - \vec{\Omega} \cdot \vec{\nabla} \frac{(\Sigma_s\phi + Q)}{\Sigma_t}
+    - \vec{\Omega} \cdot \nabla \frac{1}{\Sigma_t}\vec{\Omega} \cdot \nabla \psi + \Sigma_t \psi = \Sigma_s\phi + Q - \vec{\Omega} \cdot \nabla \frac{(\Sigma_s\phi + Q)}{\Sigma_t}
     \label{eq:SAAF}
 \end{equation}
 Where $\vec{\Omega}$ are the angles, $\Sigma_t$ is the total cross section, $\psi$ is the angular flux, $\Sigma_s$ is the scattering cross section, $\phi$ is the scalar flux, and $Q$ is the fixed source.
@@ -158,8 +159,6 @@ The angular flux, $\psi$, is a function of space, angle, and energy. In the solu
 
 Angular discretization on the left hand side of \eqref{eq:transport} is handled via the discrete ordinates ($S_N$) method, a finite-element collocation method \cite{Lathrop1965}. We assume the sources are isotropic and do not perform any additional expansion, however they can be expanded via Spherical Harmonics and the methods will still hold. 
 
-The $S_N$ method evaluates the equation at number of discrete angles or ``ordinates" and then sums over all angles with their given weights to perform a quadrature. To choose quadrature points, an octant of the unit sphere is discretized into several levels. At each level several nodes are chosen.We use a Gauss-Chebyshev angular quadrature set, which can be thought of as a product set, combining a one dimensional Gaussian Quadrature along the polar angles and an equally-weighted Chebyshev quadrature along the azimuthal angles \cite{jarrel-thesis}.
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=.5\textwidth]{fig/SNPoints.png}
@@ -167,14 +166,24 @@ The $S_N$ method evaluates the equation at number of discrete angles or ``ordina
     \label{fig:SN}
 \end{figure}
 
+The $S_N$ method evaluates the equation at number of discrete angles or ``ordinates" and then sums over all angles with their given weights to perform a quadrature. To choose quadrature points, an octant of the unit sphere is discretized into several levels. At each level several nodes are chosen. We use a Gauss-Chebyshev angular quadrature set, which can be thought of as a product set, combining a one dimensional Gaussian Quadrature along the polar angles and an equally-weighted Chebyshev quadrature along the azimuthal angles \cite{jarrel-thesis}. For a set of angles, $M$, a function integrated in angle is discretized as follows:
+
+\begin{equation}
+\int \Omega f(\Omega) d\Omega = \sum\limits_{\mrm=1}^{M} w_\mrm f_\mrm.    
+\end{equation}
+
+
+
+
+
 
 The discretized, steady-state, $S_N$ transport equation is given as follows,
 
  \begin{equation}
-  \vec{\Omega}_\mrm \cdot \vec{\nabla} \psi_\mrm \left(\vec{r}\right)+ \Sigma_{\mm{t}}\left(\vec{r}\right)\psi_\mrm = \frac{1}{4 \pi} \Sigma_{\mm{s}}\left(\vec{r}\right) \phi\left(\vec{r}\right) + \frac{1}{4 \pi} Q
+  \vec{\Omega}_\mrm \cdot \nabla \psi_\mrm \left(\vec{r}\right)+ \Sigma_{\mm{t}}\left(\vec{r}\right)\psi_\mrm = \frac{1}{4 \pi} \Sigma_{\mm{s}}\left(\vec{r}\right) \phi\left(\vec{r}\right) + \frac{1}{4 \pi} Q
   \label{eq:transport-angular}
  \end{equation}
-where $\mrm$ is the angular index and $\phi = \sum\limits_{\mrm=1}^M \omega_\mrm \psi_m$.
+where $\mrm$ is the angular index and $\phi = \sum\limits_{\mrm=1}^M \omega_\mrm \psi_\mrm$.
 
 \subsection{Energy Discretization}
 In our treatment of energy, we divide the full energy spectrum into several energy groups. By convention, the highest energy group is given the index, 1, with the index number going up until it reaches the lowest energy group. In expanding to multiple energy groups, we must take into account scattering from one group, $\rg'$ to another, $\rg$, denoted as $\rg' \rightarrow \rg $. 
@@ -182,7 +191,7 @@ In our treatment of energy, we divide the full energy spectrum into several ener
 The energy discretized, steady-state, transport equation is
 
  \begin{equation}
-  \vec{\Omega} \cdot \vec{\nabla} \psi_\rg \left(\vec{r}\right)+ \Sigma_{\mm{t}, \rg}\left(\vec{r}\right)\psi_\rg = \frac{1}{4 \pi} \sum\limits_{\rg'=1}^{G}\Sigma_{\mm{s}, \rg' \rightarrow \rg}\left(\vec{r}\right) \phi_\rg\left(\vec{r}\right) + \frac{1}{4 \pi} Q_\rg.
+  \vec{\Omega} \cdot \nabla \psi_\rg \left(\vec{r}\right)+ \Sigma_{\mm{t}, \rg}\left(\vec{r}\right)\psi_\rg = \frac{1}{4 \pi} \sum\limits_{\rg'=1}^{G}\Sigma_{\mm{s}, \rg' \rightarrow \rg}\left(\vec{r}\right) \phi_\rg\left(\vec{r}\right) + \frac{1}{4 \pi} Q_\rg.
   \label{eq:transport-energy}
  \end{equation}
 
