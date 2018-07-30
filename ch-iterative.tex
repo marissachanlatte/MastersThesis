@@ -2,7 +2,7 @@
 \section{Iterative Methods for Neutron Transport}
 Solving the transport equation involves several nested iterative solvers. 
 \subsubsection{Linear Solver}
-Recall the fixed source transport equation (Eq \ref{eq:transport_fixed_source}). After discretizing in space it takes the form of a linar matrix equation $\textbf{A}\psi = b$. $\textbf{A}$ is the matrix formed by the approximation of the derivative, $[\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E)$, using finite differences or any other discretization method. $b$ is a vector representing the right hand side of (Eq. \ref{eq:transport}): 
+Recall the fixed source transport equation (Eq \ref{eq:transport_fixed_source}). After discretizing in space it takes the form of a linar matrix equation $\textbf{A}\psi = b$. $\textbf{A}$ is the matrix formed by discretizing the left-hand side, $[\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E)$, using finite elements or any other discretization method. $b$ is a vector representing the right hand side of (Eq. \ref{eq:transport}): 
 
 \begin{align}
 \chi(E) \int_0^\infty dE'  \int_{4\pi} d\hat{\Omega}' \nu &\Sigma_{f}(\vec{r}, E', \hat{\Omega}')\psi(\vec{r}, \hat{\Omega}', E') \nonumber \\ &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E')  + Q. \nonumber
@@ -17,25 +17,10 @@ The inner iterations solve the space-angle component for each energy group. As w
 The multigroup iterations solve the energy component. When we have more than one energy group, we solve each group independently, performing source iteration on each one. In doing so, we must include the scattering from all other energy groups to the current group multiplied by the flux of the other groups. When there is no ``upscattering", meaning there is no scattering from a lower energy group to a higher energy group, we can solve each group sequentially, starting with the highest energy group, without any problems. No other groups scatter to group one, the highest energy group, the next group is only dependent on the flux from group one, which we just solved for, and so on. In the case of upscattering, an outer layer of iteration is added to converge the scattering source. The most common multigroup solver is called the Gauss-Seidel method. Other alternatives include Jacobi or multigroup Krylov. 
 
 The three formulations that are compared, NDA, TG-NDA, and SAAF can be solved using any combination of the solvers listed above. We will explain in detail the solvers that were used in our implementation. 
+
 \section{Implemented Solvers}
-\subsection{Linear Solver - Conjugate Gradient}
-For our linear solver we used SciPy's implementation of the conjugate gradient method (CG). CG solves the system $\textbf{A}x = b$ assuming $\textbf{A}$ is a real, symmetric, positive-definite matrix. By using the finite element method, we are guaranteed that our matrix $\textbf{A}$ satisfies those constraints, so CG is an applicable method for our problem.  The pseudocode is given below:
-\begin{algorithm}
-\caption{Conjugate Gradient}
-\begin{algorithmic}
-    \State $r \gets b - Ax$
-    \State $p \gets r$
-    \While{$r > tol$}
-        \State $\alpha \gets \frac{r^Tr}{p^TAp}$
-        \State $x \gets x + \alpha p$
-        \State $r_{new} \gets r - \alpha A p$
-        \State $\beta \gets \frac{r_{new}^Tr_{new}}{r^Tr}$
-        \State $p \gets r_{new} + \beta p$
-        \State $r \gets r_{new}$
-    \EndWhile
-    \State \textbf{return} $x$  
-\end{algorithmic}
-\end{algorithm}
+\subsection{Linear Solver}
+For our linear solver we used SciPy's sparse linear solver. \todo{What linear solver does SciPy use?}
 
 \subsection{Within Group Solver - Source Iteration}
 The inner solves are handled by a procedure known as source iteration. The $\psi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\psi$ is updated with the result of that solve. This continues until the values converge. 
