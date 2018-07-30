@@ -1,15 +1,5 @@
 We used a number of tests to validate the code. 
-\section{Matrix Properties}
-Since we are using a finite element approximation, the left hand side should be symmetric positive definite. I implemented a unit test to check for this property.
 
-\section{Hand Calculated Problems}
-Hand calculated solutions, although tedious to compute, proved to be the most helpful in debugging. I computed solutions to a two element problem (one with a square domain and one rectangular) as well as an eight element problem. These calculations were done in a jupyter notebook that is included with the code. 
-
-\section{No Scattering}
-We tested the no scattering case with one material and one energy group. The absorption cross section and the external source were both set to 10. The expected answer was a scalar flux of one in the center. 
-
-\section{Scattering}
-To test the code's ability to handle scattering, we chose a simple test problem.  In an infinite medium we can assume no gradient, so the diffusion equation will equal $\phi \approx \frac{q}{\sigma_a}$ in the center. In our test, the absorption cross section was set to two and the external source was ten, meaning $\frac{q}{\sigma_a} = 5$. In the test problem, we have a much smaller domain, so there will be leakage, but the flux in the center should still be close to $\frac{q}{\sigma_a}$ We expect a flux of $\approx 5$ in the center. 
 
 \section{Multigroup Scattering, No Upscatter}
 To test the Gauss-Seidel multigroup scattering method we use the two group diffusion equation as a benchmark. 

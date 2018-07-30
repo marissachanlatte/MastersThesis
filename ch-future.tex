@@ -1,0 +1,15 @@
+
+In this work we derived and implemented a two grid acceleration scheme for the nonlinear diffusion acceleration equations with neutron upscattering. In our tests problems, we observe a reduction in the number of Gauss-Seidel iterations necessary to resolve the upscattering of roughly a factor of three. The current implementation is in a lightweight code developed in python that is only designed as a proof of concept. We intend to implement a heavier-duty C++ version into the Slaybaugh Lab's neutron transport code, Bay Area Radiation Transport. With that implementation we can begin to test larger problems and understand how the method scales.
+
+\section{Possible Extensions to TG-NDA}
+There are a number of modifications to our implementation that could be interesting to explore with TG-NDA. 
+
+\subsection{Other Discretization Schemes}
+\subsubsection{$P_N$ angular discretization}
+Our derivation is specific to the $S_N$ equations. It is possible to derive the higher order equation using $P_N$ instead \cite{zheng-thesis}. 
+\subsubsection{Discontinuous Finite Elements}
+In our implementation we use continuous finite elements to discretize in space. Discretizing NDA using discontinuous finite elements, as done in \cite{Schunert2016}, would change the form of TG-NDA. 
+\subsection{Other Higher Order Equations}
+We chose to pair NDA with SAAF, however other equations could be used as well, such as the even-parity equation \cite{Noh1996}.
+\subsection{Applications to Criticality Problems}
+In this work we only focused on fixed-source problems for shielding applications, however many materials commonly used in nuclear reactors, such as water, heavy water, or graphite, also exhibit significant upscattering. Performing criticality calculations using our method would be a straightforward extension involving only an additional later of iteration to perform the eigenvalue calculation. 
