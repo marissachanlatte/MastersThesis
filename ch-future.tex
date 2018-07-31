@@ -5,10 +5,10 @@ In this work we derived and implemented a two grid acceleration scheme for the n
 There are a number of modifications to our implementation that could be interesting to explore with TG-NDA. 
 
 \subsection{Other Discretization Schemes}
-\subsubsection{$P_N$ angular discretization}
-Our derivation is specific to the $S_N$ equations. It is possible to derive the higher order equation using $P_N$ instead \cite{zheng-thesis}. 
+\subsubsection{$P_N$ Angular Discretization}
+Our derivation is specific to the $S_N$ equations. It is possible to derive the higher order equation using $P_N$ instead \cite{zheng-thesis} and see if there is any effect on the convergence behavior of TG-NDA. 
 \subsubsection{Discontinuous Finite Elements}
-In our implementation we use continuous finite elements to discretize in space. Discretizing NDA using discontinuous finite elements, as done in \cite{Schunert2016}, would change the form of TG-NDA. 
+In our implementation we use continuous finite elements to discretize in space. Discretizing NDA using discontinuous finite elements, as done in \cite{Schunert2017}, would change the form of TG-NDA and could change Gauss-Seidel convergence behavior. 
 \subsection{Other Higher Order Equations}
 We chose to pair NDA with SAAF, however other equations could be used as well, such as the even-parity equation \cite{Noh1996}.
 \subsection{Applications to Criticality Problems}

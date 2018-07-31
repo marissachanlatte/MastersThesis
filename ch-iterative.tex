@@ -53,4 +53,13 @@ When dealing with a multigroup problem, the scattering source is dependent not o
 \end{algorithmic}
 \end{algorithm}
 
+\subsection{TG-NDA}
+TG-NDA acclerates convergence by applying a correction at two different layers of iteration. NDA applies a correction using the drift vector at each source iteration. Two-Grid provides a correction at each Gauss-Seidel iteration. The full scheme as implemented is illustrated below with the correction terms highlighted in blue. 
 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/TGNDAchart.png}
+    \caption{Full Iterative TG-NDA Scheme}
+    \label{fig:tgnda-graph}
+\end{figure}
