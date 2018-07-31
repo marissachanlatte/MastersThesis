@@ -1,22 +1,30 @@
-We used a number of tests to validate the code. 
-
-
-\section{Multigroup Scattering, No Upscatter}
-To test the Gauss-Seidel multigroup scattering method we use the two group diffusion equation as a benchmark. 
-\begin{align}
- D_1\nabla^2 \phi_1 - \Sigma_{r, 1 \rightarrow 1} \phi_1 + s_1^{'''} &= 0 \\
- D_2\nabla^2 \phi_2 - \Sigma_{r, 2 \rightarrow 2} \phi_2 + s_2^{'''} + \Sigma_{s, 1 \rightarrow 2} \phi_1 &= 0
-\end{align}
-
-where $D_g = \frac{1}{3\Sigma_{t, g}}$ and $\Sigma_{r, g \rightarrow g} = \Sigma_{t, g} - \Sigma_{s, g \rightarrow g}$. In an infinite medium we can assume no gradient, so the flux should approach $\frac{s_1^{'''}}{\Sigma_{r, 1}}$ in the first energy group and $\frac{s_2^{'''} + \phi_1 \Sigma_{s, 1 \rightarrow 2}}{\Sigma_{r, 2}}$ in the second.  
-
-This problem was run with $ s^{'''} = 1$ for both groups, $\Sigma_{s, 1\rightarrow 2} = 11$, $\Sigma_{r, 1} = 2$ and $\Sigma_{r, 2} = 1$ This gives an expected flux of $0.50 $ in the first group and $1.50$ in the second. 
+We used a number of tests to validate the code. There are a number of unit tests designed to test individual functions in the code. For integration testing we selected a suite of simple problems all using a single material on a square domain for which we could derive or approximate analytic solutions. We varied the material properties to trigger use of the various solvers. These problems were a single energy group with no scattering, a single energy group with scattering, and two energy groups with scattering. 
 
 \section{NDA/SAAF Agreement}
-As the SAAF equation is non-conservative, its solution does not necessarily agree with the low order equation it is coupled with. However, the two solutions should approach each other as the number of mesh cells increases \cite{Wang2013}. Our code replicates this behavior. 
+We also tested the agreement between the NDA+SAAF and SAAF alone to ensure we were replicating expected behavior. As the SAAF equation is non-conservative, its solution does not necessarily agree with the low order equation it is coupled with. However, the two solutions should approach each other as the number of mesh cells increases \cite{Wang2013}. We tested to see if our code replicated this behavior in a number of ways. First we simply compare the mean difference in the SAAF and NDA solutions for scalar flux as number of mesh cells increases. We notice a consistent rate of convergence. 
 \begin{figure}
     \centering
-    \includegraphics[width=.75\textwidth]{fig/SAAFvsNDA}
+    \includegraphics[width=.75\textwidth]{fig/NDAvsSAAF.png}
     \caption{SAAF/NDA Agreement with Mesh Refinement}
     \label{fig:SAAFvsNDA}
 \end{figure}
+
+Second we look at the error in the absorption rate, $\int_\mathcal{D}\Sigma_a\phi$, in NDA as compared to a fine mesh SAAF solution. This too steadily decreases as the number of mesh cells increase.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\textwidth]{fig/NDAAbsorptionLogLog.png}
+    \caption{Error in NDA Absorption Rate as Mesh Refines}
+    \label{fig:abs_err}
+\end{figure}
+
+Finally, we plot a 1-D line out of all three methods. For this problem we chose one test material with one group and some scattering. This is more of a gut check than a formal check of convergence. From this plot we can clearly see that NDA has provided a correction to diffusion, producing a solution that is much closer to the higher order equation than diffusion by itself. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.75\textwidth]{fig/LineOut25.png}
+    \caption{Comparison of Diffusion, SAAF, and NDA}
+    \label{fig:comparison}
+\end{figure}
+
+From the results of these three checks, we determine that we are in agreement with previously published work on SAAF+NDA and have implemented a working version. 

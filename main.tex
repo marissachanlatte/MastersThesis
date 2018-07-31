@@ -1,4 +1,4 @@
-\documentclass[11pt]{report}
+\documentclass[12pt]{report}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -27,15 +27,22 @@
 \author{Marissa Ramirez Zweiger }
 \date{July 27th, 2018}
 
+\pagenumbering{roman}
 \begin{document}
 
 \maketitle
 
+
 \tableofcontents
 
+
+
 \chapter{Introduction}
+\setcounter{page}{1}
+\pagenumbering{arabic}
 \label{sec:intro}
 \input{ch-introduction.tex}
+
 
 \chapter{Two-Grid, Nonlinear Diffusion Acceleration}
 \label{sec:derivation}
