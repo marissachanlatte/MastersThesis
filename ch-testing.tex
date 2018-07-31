@@ -2,14 +2,14 @@ We used a number of tests to validate the code. There are a number of unit tests
 
 \section{NDA/SAAF Agreement}
 We also tested the agreement between the NDA+SAAF and SAAF alone to ensure we were replicating expected behavior. As the SAAF equation is non-conservative, its solution does not necessarily agree with the low order equation it is coupled with. However, the two solutions should approach each other as the number of mesh cells increases \cite{Wang2013}. We tested to see if our code replicated this behavior in a number of ways. First we simply compare the mean difference in the SAAF and NDA solutions for scalar flux as number of mesh cells increases. We notice a consistent rate of convergence. 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=.75\textwidth]{fig/NDAvsSAAF.png}
     \caption{SAAF/NDA Agreement with Mesh Refinement}
     \label{fig:SAAFvsNDA}
 \end{figure}
 
-Second we look at the error in the absorption rate, $\int_\mathcal{D}\Sigma_a\phi$, in NDA as compared to a fine mesh SAAF solution. This too steadily decreases as the number of mesh cells increase.
+Second we look at the error in the absorption rate, $\int_\mathcal{D}\Sigma_a\phi$, in NDA as compared to a fine mesh SAAF solution. This, too, steadily decreases as the number of mesh cells increase.
 
 \begin{figure}[H]
     \centering
@@ -20,7 +20,7 @@ Second we look at the error in the absorption rate, $\int_\mathcal{D}\Sigma_a\ph
 
 Finally, we plot a 1-D line out of all three methods. For this problem we chose one test material with one group and some scattering. This is more of a gut check than a formal check of convergence. From this plot we can clearly see that NDA has provided a correction to diffusion, producing a solution that is much closer to the higher order equation than diffusion by itself. 
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=.75\textwidth]{fig/LineOut25.png}
     \caption{Comparison of Diffusion, SAAF, and NDA}

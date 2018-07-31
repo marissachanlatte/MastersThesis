@@ -1,5 +1,5 @@
 \section{Continuous FEM on an Unstructured Grid}
-To discretize in space we will be using the continuous finite element method with bilinear basis functions on an unstructured triangular mesh. The mesh is generated with the triangle library via a Delaunay triangulation algorithm. 
+To discretize in space we will be using the continuous finite element method with bilinear basis functions on an unstructured triangular mesh. The mesh is generated with the Triangle library \cite{shewchuk96b} via a Delaunay triangulation algorithm. 
 \par
 To integrate over the triangles, we have implemented a 2nd degree Gaussian Quadrature approximation over the standard triangle,
 \begin{align}
@@ -57,15 +57,3 @@ Integrating by parts,
         \left ( Q, \psi* \right)_D &+ \left ( \vec{\Omega} \frac{Q}{\sigma_t}, \vec{\nabla}\psi* \right)_D - \left ( \vec{\Omega}\cdot \hat{n} \frac{Q}{\sigma_t}, \psi* \right)_{\Gamma} 
 \end{align*}
 
-This can be written in matrix form as
-\begin{equation}
-    (A - B + C)\psi = D - E
-\end{equation}
-where,
-\begin{align*}
-    A_{ij} &= \int_{D}\frac{1}{\sigma_t}\vec{\Omega}\cdot \vec{\Omega} \nabla \varphi_i \nabla \varphi_j dx \\
-    B_{ij} &= \oint_{\Gamma} \frac{1}{\sigma_t}\vec{\Omega}\cdot \vec{\Omega} \nabla \varphi_i \varphi_j dx \\
-    C_{ij} &= \int_{D}\sigma_t \varphi_i \varphi_j dx \\
-    D_i &= \int_D Q\varphi_i dx \\
-    E_i &= \int \frac{1}{\sigma_t} \vec{\Omega}\cdot \vec{\nabla} Q \varphi_i dx
-\end{align*}
