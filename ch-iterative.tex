@@ -21,8 +21,8 @@ The three formulations that are discussed, NDA, TG-NDA, and SAAF can be solved u
 \subsection{Linear Solver}
 For our linear solver we used SciPy's conjugate gradient solver \cite{SciPy} \cite{Shewchuck1994}. CG solves the system Ax = b assuming A is a real, symmetric, positive-definite matrix. By using the finite element method, we are guaranteed that our matrix A satisfies those constraints, so CG is an applicable method for our problem.
 
-\subsection{Within Group Solver - Source Iteration}
-The inner solves are handled by a procedure known as source iteration. The $\psi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\psi$ is updated with the result of that solve. This continues until the values converge. 
+\subsection{Within Group Solver - NDA}
+The inner solves are handled by NDA which is a correction to source iteration. In source iteration, the $\psi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\psi$ is updated with the result of that solve. This continues until the values converge. 
 \begin{algorithm}
 \caption{Source Iteration}
 \begin{algorithmic}
@@ -34,6 +34,20 @@ The inner solves are handled by a procedure known as source iteration. The $\psi
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
+
+NDA adds an extra step to this process by first calculating the angular flux using a higher order equation and then solving the lower order equation using the result of the higher order equation to compute a correction. The result of the lower order solve is then used as the guess on the right hand side during the next iteration. 
+
+\begin{enumerate}
+    \item Intitialize system, by setting $\vec{\textbf{D}}$ to 0 and solving \eqref{eq:NDA_1g} to get $\phi^0$ 
+    \item Loop Until Convergence:
+        \begin{enumerate}
+            \item Solve \eqref{eq:SAAF} for $\psi^l$ using $\phi^{l-1}$ on RHS.
+            \item Calculate drift vector, \eqref{eq:drift_vector}, using $\psi^l$
+            \item Solve \eqref{eq:NDA_1g} for $\phi^l$
+            \item Check $\phi^{l-1}, \phi^l$ for convergence
+        \end{enumerate}
+    \item Return $\phi$
+\end{enumerate}
 
 \subsection{Multigroup Solver - Gauss Seidel}
 When dealing with a multigroup problem, the scattering source is dependent not only on the flux from the current group, but from other groups as well. In the case that there is no upscattering, meaning that the flux from a lower energy group does not contribute to any higher energy group, we can solve sequentially, starting with the highest energy group and using the fluxes as we calculate them. In the case of upscattering, we must choose an initial guess for the fluxes of lower energy groups and then iterate until we find a convergent value. We use a method inspired by the Gauss-Seidel method for linear equations. When iterating, we use the flux calculated in this iteration for the higher energy groups and the flux calculated in the previous iteration for the lower energy groups. The pseudocode of the algorithm is given below. 
