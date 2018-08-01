@@ -1,7 +1,9 @@
-\documentclass[11pt]{report}
+\documentclass[12pt]{report}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{caption}
 \usepackage{tabls}
 \usepackage{afterpage}
 \usepackage{epsf}
@@ -23,19 +25,63 @@
 \newcommand{\rg}{\mm{g}}
 \newcommand{\mrm}{\mm{m}}
 \newcommand{\rgp}{{\rg'}}
+
+\usepackage{geometry}
+\geometry{margin=1in}
+
 \title{A Two-Grid, Nonlinear Diffusion Acceleration Method for the $S_N$ Equations with Neutron Upscattering}
 \author{Marissa Ramirez Zweiger }
 \date{July 27th, 2018}
 
+\pagenumbering{roman}
 \begin{document}
 
-\maketitle
+\begin{center}
+A Two-Grid, Nonlinear Diffusion Acceleration Method  \\ 
+for the $S_N$ Equations with Neutron Upscattering \\
+\vspace{20mm}
+by \\
+\vspace{5mm}
+Marissa Ramirez Zweiger \\ 
+\vspace{20mm}
+A thesis submitted in partial
+satisfaction of the \\
+\vspace{5mm}
+requirements for the degree of \\
+\vspace{5mm}
+Master of Science \\
+\vspace{5mm}
+in \\
+\vspace{5mm}
+Nuclear Engineering \\
+\vspace{5mm}
+in the \\
+\vspace{5mm}
+Graduate Division \\
+\vspace{5mm}
+of the \\
+\vspace{5mm}
+University of California, Berkeley \\
+\vspace{20mm}
+Committee in charge: \\
+\vspace{5mm}
+Professor Rachel Slaybaugh, Chair \\
+Professor Phillip Colella \\
+Professor Massimiliano Fratoni \\
+\vspace{5mm}
+Summer 2018
+\end{center}
 
 \tableofcontents
 
+
+
 \chapter{Introduction}
+\setcounter{page}{1}
+\pagenumbering{arabic}
 \label{sec:intro}
 \input{ch-introduction.tex}
+
 
 \chapter{Two-Grid, Nonlinear Diffusion Acceleration}
 \label{sec:derivation}

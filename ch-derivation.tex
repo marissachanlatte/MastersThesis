@@ -9,28 +9,28 @@ Consider the first order, fixed-source, multigroup, steady state, \sn\ transport
   Where $\phi_\rg = \sum\limits_{\mrm=1}^M w_\mrm \psi_{\mrm, \rg}$. Here, we assume vacuum boundary conditions. Using a similar technique as Peterson et al.\ used for the one group case, we multiply by angular weights and sum to get the zeroth moment equation \cite{morel-holo}.
 
   \begin{equation}
-  \nabla \cdot J + \Sigma_{r,\rg}\phi_g  = \sum_{\substack{\rg'=1 \\ \rg' \neq \rg}}^G \Sigma_{s,\rg' \rightarrow g}\phi_{\rg'} + Q_\rg
+  \nabla \cdot J_\rg + \Sigma_{r,\rg}\phi_g  = \sum_{\substack{\rg'=1 \\ \rg' \neq \rg}}^G \Sigma_{s,\rg' \rightarrow \rg}\phi_{\rg'} + Q_\rg
   \label{eq:zeroth_moment}
   \end{equation}
-where $J = \sum\limits_{\mrm=1}^{M}w_\mrm \vec{\Omega}\psi_\mrm$ and the removal cross section, $\Sigma_{r, \rg} = \Sigma_{t, \rg} - \Sigma_{s, \rg \rightarrow \rg}$ . 
+where $J_\rg = \sum\limits_{\mrm=1}^{M}w_\mrm \vec{\Omega}\psi_{\mrm, \rg}$ and the removal cross section, $\Sigma_{r, \rg} = \Sigma_{t, \rg} - \Sigma_{s, \rg \rightarrow \rg}$ . 
   Now consider the first moment equation:
   \begin{equation}
-  \nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P} + \Sigma_t J = 0
+  \nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P_\rg} + \Sigma_{t, \rg} J_\rg = 0
   \end{equation}
-where $\nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P} =  \Omega_{m,g} \Omega_{m,g} \nabla \psi_{g}$. It can be rewritten as: 
+where $\nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P_\rg} =  \Omega_{m,\rg} \Omega_{m,\rg} \nabla \psi_{\rg}$. It can be rewritten as: 
 
   \begin{equation}
-  J= -\frac{1}{\Sigma_t} \nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P}. 
+  J_\rg = -\frac{1}{\Sigma_{t, \rg}} \nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P_\rg}. 
   \end{equation}
-  By adding and subtracting the diffusion coefficient, $D = \frac{1}{3\Sigma_t}$, times the gradient of the flux, it takes the form of a correction to Fick's Law. 
+  By adding and subtracting the diffusion coefficient, $D_\rg = \frac{1}{3\Sigma_{t, \rg}}$, times the gradient of the flux, it takes the form of a correction to Fick's Law. 
   \begin{equation}
-  J = -D \nabla \phi_\rg + D \nabla \phi_\rg - \frac{1}{\Sigma_t} \nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P} \\
-  = -D \nabla \phi_\rg - \vec{\textbf{D}} \phi_\rg
+  J_\rg = -D_\rg \nabla \phi_\rg + D_\rg \nabla \phi_\rg - \frac{1}{\Sigma_{t, \rg}} \nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P_\rg} \\
+  = -D_\rg \nabla \phi_\rg - \vec{\textbf{D}}_\rg \phi_\rg
   \label{eq:fick_corr}
   \end{equation}
   where 
  \begin{equation}
-  \vec{\textbf{D}} (\psi_\rg) = \frac{\sum\limits_{\mrm=1}^M w_\mrm [\frac{1}{\Sigma_t} \vec{\Omega}_\mrm \vec{\Omega}_\mrm \cdot \nabla\psi_{\mrm, \rg} - D \nabla \sum\limits_{\mrm=1}^M w_\mrm\psi_{\mrm, \rg}]}{\sum\limits_{\mrm=1}^M w_\mrm \psi_{\mrm, \rg}}.
+  \vec{\textbf{D}}_\rg (\psi_\rg) = \frac{\sum\limits_{\mrm=1}^M w_\mrm [\frac{1}{\Sigma_t} \vec{\Omega}_\mrm \vec{\Omega}_\mrm \cdot \nabla\psi_{\mrm, \rg} - D_\rg \nabla \sum\limits_{\mrm=1}^M w_\mrm\psi_{\mrm, \rg}]}{\sum\limits_{\mrm=1}^M w_\mrm \psi_{\mrm, \rg}}.
   \end{equation} 
  Substituting \eqref{eq:fick_corr} in \eqref{eq:zeroth_moment} we have the following NDA equation:
   \begin{equation}
@@ -47,7 +47,7 @@ where $\nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P} =  \Omega_{
   \begin{equation}
   \epsilon_\rg^{k+1/2} := \phi_\rg - \phi_\rg^{k + 1/2} \quad \mm{and} \quad R_\rg^{k+1/2} := \sum\limits_{\rg'=\rg+1}^\mm{G} \Sigma_{\mm{s},\rg' \rg}\left(\phi_{\rg'}^k - \phi_{\rg'}^{k + 1/2}\right)\:.
   \end{equation}
-  $\epsilon_\rg^{k + 1/2}$ can be further broken into the spatial component $\epsilon$ and scattering spectrum $\xi_\rg$ as defined in \cite{morel-upscat,evans-upscat}.
+  $\epsilon_\rg^{k + 1/2}$ can be further broken into the spatial component $\phi_{\epsilon}$ and scattering spectrum $\xi_\rg$ as defined in \cite{morel-upscat,evans-upscat}.
   \begin{equation}
   \epsilon_\rg^{k+1/2} = \phi_{\epsilon}^{k+1/2}\left(\vec{r}\right)\xi_\rg, \hspace{5mm} \sum\limits_{\rg=1}^G \xi_\rg = 1.
   \end{equation}
