@@ -1,15 +1,18 @@
 
-In this work we derived and implemented a two grid acceleration scheme for the nonlinear diffusion acceleration equations with neutron upscattering. In our tests problems, we observe a reduction in the number of Gauss-Seidel iterations necessary to resolve the upscattering of roughly a factor of three. The current implementation is in a lightweight code developed in python that is only designed as a proof of concept. We intend to implement a heavier-duty C++ version into the Slaybaugh Lab's neutron transport code, Bay Area Radiation Transport. With that implementation we can begin to test larger problems and understand how the method scales.
+In this work, we derived and implemented a two-grid acceleration scheme for the nonlinear diffusion acceleration equations with neutron upscattering. In our tests, we observed a reduction in the number of Gauss Seidel iterations necessary to resolve the upscattering of roughly a factor of three. 
+% Add a sentence or two about why this matters and what it could make possible.
+
+The current implementation is in a lightweight code developed in Python that is only designed as a proof of concept. We intend to implement a heavier-duty C++ version into the Slaybaugh Lab's neutron transport code, Bay Area Radiation Transport (BART, link to github). With the BART implementation we can begin to test larger problems and understand how the method scales.
 
 \section{Possible Extensions to TG-NDA}
-There are a number of modifications to our implementation that could be interesting to explore with TG-NDA. 
+There are a number of modifications to our implementation of TG-NDA that could be interesting to explore. 
 
 \subsection{Other Discretization Schemes}
 \subsubsection{$P_N$ Angular Discretization}
-Our derivation is specific to the $S_N$ equations. It is possible to derive the higher order equation using $P_N$ instead \cite{zheng-thesis} and see if there is any effect on the convergence behavior of TG-NDA. 
+Our derivation is specific to the $S_N$ equations. It is possible to derive the higher order equation using $P_N$ instead \cite{zheng-thesis} to see if there is any effect on the convergence behavior of TG-NDA. 
 \subsubsection{Discontinuous Finite Elements}
-In our implementation we use continuous finite elements to discretize in space. Discretizing NDA using discontinuous finite elements, as done in \cite{Schunert2017}, would change the form of TG-NDA and could change Gauss-Seidel convergence behavior. 
+In our implementation ,we use continuous finite elements to discretize space. Discretizing NDA using discontinuous finite elements, as done in \cite{Schunert2017}, would change the form of TG-NDA and could change Gauss Seidel convergence behavior. 
 \subsection{Other Higher Order Equations}
-We chose to pair NDA with SAAF, however other equations could be used as well, such as the even-parity equation \cite{Noh1996}.
+We chose to pair NDA with SAAF; however, other equations could be used as well, such as the even-parity equation \cite{Noh1996}. Using other equations higher order could also cause different convergence behavior. 
 \subsection{Applications to Criticality Problems}
-In this work we only focused on fixed-source problems for shielding applications, however many materials commonly used in nuclear reactors, such as water, heavy water, or graphite, also exhibit significant upscattering. Performing criticality calculations using our method would be a straightforward extension involving only an additional later of iteration to perform the eigenvalue calculation. 
+In this work we only focused on fixed-source problems for shielding applications. However, an extension to criticality problems could be beneficial as many materials commonly used in nuclear reactors, such as water, heavy water, or graphite, also exhibit significant upscattering. Performing criticality calculations using our method would be a straightforward extension involving only an additional layer of iteration to perform the eigenvalue calculation. 
