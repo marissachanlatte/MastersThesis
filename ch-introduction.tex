@@ -204,63 +204,65 @@ While we are able to replicate the results of \cite{Wang2013}, showing a signifi
 
 
 \section{Methods of Discretization}
-The angular flux, $\psi$, is a function of space, angle, and energy. In the solution process, each one of those dimensions is discretized. There are several choices that have to be made regarding discretizations. In this work, we endeavor to show equation forms that are discretization agnostic as well as showing formulations unique to the particular discretization methods we chose to implement. 
+The angular flux, $\psi$, is a function of space, angle, and energy. In the solution process, each dimension is discretized. There are several choices that have to be made regarding discretization. In this work, we endeavor to show equation forms that are discretization agnostic as well as showing formulations unique to the particular discretization methods we chose to implement. 
 
 \subsection{Angular Discretization}
 
-Angular discretization on the left hand side of \eqref{eq:transport} is handled via the discrete ordinates ($S_N$) method, a finite-element collocation method \cite{Lathrop1965}. We assume the sources are isotropic and do not perform any additional expansion, however they can be expanded via Spherical Harmonics and the methods will still hold. 
 
+% all angles are handled with this, not just one side.
+%We assume the sources are isotropic and therefore do not perform any additional expansion; however, the scattering and fixed sources can be expanded via Spherical Harmonics and the methods will still hold. 
+% this sentence doesn't make mch sense unless you already know about expansion. I think you don't need to comment on that here. 
+%
 \begin{figure}[H]
     \centering
     \includegraphics[width=.5\textwidth]{fig/SNPoints.png}
     \caption{Equally-Weighted Gauss-Chebyshev Quadrature Points \cite{Lathrop1965}}
     \label{fig:SN}
 \end{figure}
-
-The $S_N$ method evaluates the equation at number of discrete angles or ``ordinates" and then sums over all angles with their given weights to perform a quadrature. To choose quadrature points, an octant of the unit sphere is discretized into several levels. At each level several nodes are chosen. We use a Gauss-Chebyshev angular quadrature set, which can be thought of as a product set, combining a one dimensional Gaussian Quadrature along the polar angles and an equally-weighted Chebyshev quadrature along the azimuthal angles \cite{jarrel-thesis}. For a set of angles, $M$, a function integrated in angle is discretized as follows:
-
+%
+Angular discretization of Eqn.~\eqref{eq:transport} is handled via the discrete ordinates ($S_N$) method, a finite-element collocation method \cite{Lathrop1965}. The $S_N$ method uses a quadrature rule, evaluating the equation at number of discrete angles or ``ordinates" and uses corresponding weights to perform a sum that results in integration over the unit sphere. 
+For a set of $N$ ordinates with weights $w_n$, a function $f$ integrated over angle as
+%
 \begin{equation}
-\int \Omega f(\Omega) d\Omega = \sum\limits_{\mrm=1}^{M} w_\mrm f_\mrm.    
+\int f(\Omega) d\Omega = \sum\limits_{n=1}^{N} w_n f_n \:.  
 \end{equation}
+%To choose quadrature points, an octant of the unit sphere is discretized into several levels. At each level several nodes are chosen. 
+% that's not true generically for quadrature points.
+We use a Gauss-Chebyshev angular quadrature set, which can be thought of as a product set, combining a one-dimensional Gaussian Quadrature along the polar angles and an equally-weighted Chebyshev quadrature along the azimuthal angles \cite{jarrel-thesis}. This can be seen in Figure~\ref{fig:SN}. 
 
-
-
-
-
-
-The discretized, steady-state, $S_N$ transport equation is given as follows,
-
+The steady-state, one-group $S_N$ transport equation is given as follows,
+%
  \begin{equation}
-  \vec{\Omega}_\mrm \cdot \nabla \psi_\mrm \left(\vec{r}\right)+ \Sigma_{\mm{t}}\left(\vec{r}\right)\psi_\mrm = \frac{1}{4 \pi} \Sigma_{\mm{s}}\left(\vec{r}\right) \phi\left(\vec{r}\right) + \frac{1}{4 \pi} Q
+  \vec{\Omega}_n \cdot \nabla \psi_n \left(\vec{r}\right)+ \Sigma_{\mm{t}}\left(\vec{r}\right)\psi_n = \frac{1}{4 \pi} \Sigma_{\mm{s}}\left(\vec{r}\right) \phi\left(\vec{r}\right) + \frac{1}{4 \pi} Q\left(\vec{r}\right)\:,
   \label{eq:transport-angular}
  \end{equation}
-where $\mrm$ is the angular index and $\phi = \sum\limits_{\mrm=1}^M \omega_\mrm \psi_\mrm$.
+where $n$ is the angular index and $\phi = \sum\limits_{n=1}^N \omega_n \psi_n$.
+% you don't have to switch to n, but it's the standard notation in the field and might confuse people. Hence S_N, not S_M. 
 
 \subsection{Energy Discretization}
-In our treatment of energy, we divide the full energy spectrum into several energy groups. By convention, the highest energy group is given the index, 1, with the index number going up until it reaches the lowest energy group. In expanding to multiple energy groups, we must take into account scattering from one group, $\rg'$ to another, $\rg$, denoted as $\rg' \rightarrow \rg $. 
+In our treatment of energy, we divide the full energy spectrum into several energy groups. By convention, the highest energy group is given the index, 1, with the index number going up until it reaches the lowest energy group, $G$. In expanding to multiple energy groups, we must take into account scattering from one group, $\rg'$ to another, $\rg$, denoted as $\rg' \rightarrow \rg $. 
 
 The energy discretized, steady-state, transport equation is
-
+%
  \begin{equation}
-  \vec{\Omega} \cdot \nabla \psi_\rg \left(\vec{r}\right)+ \Sigma_{\mm{t}, \rg}\left(\vec{r}\right)\psi_\rg = \frac{1}{4 \pi} \sum\limits_{\rg'=1}^{G}\Sigma_{\mm{s}, \rg' \rightarrow \rg}\left(\vec{r}\right) \phi_{\rg'}\left(\vec{r}\right) + \frac{1}{4 \pi} Q_\rg.
+  \vec{\Omega} \cdot \nabla \psi_\rg \left(\vec{r}\right)+ \Sigma_{\mm{t}, \rg}\left(\vec{r}\right)\psi_\rg = \frac{1}{4 \pi} \sum\limits_{\rg'=1}^{G}\Sigma_{\mm{s}, \rg' \rightarrow \rg}\left(\vec{r}\right) \phi_{\rg'}\left(\vec{r}\right) + \frac{1}{4 \pi} Q_\rg\:.
   \label{eq:transport-energy}
  \end{equation}
 
 
 \subsection{Spatial Discretization}
-In this work, we choose to discretize in two dimensions, assuming uniformity in the third, however all formulations could be extended to be truly 3D. Spatial discretization methods for the transport equation are usually performed using commonly known differential equation discretization techniques such as the finite difference, finite volume, or finite element methods. In this work we discretize using the finite element method on triangular elements (described in detail in Appendix \ref{sec:spatial}), however TG-NDA can be used with any spatial discretization. We give the weak forms of NDA and SAAF. Their full derivations can be seen in the appendix. 
-
+In this work, we choose to discretize in two dimensions, assuming uniformity in the third; however, all formulations could be extended to be truly 3D. Spatial discretization methods for the transport equation are usually performed using commonly-known differential equation discretization techniques such as the finite difference, finite volume, or finite element methods. In this work we, discretize using the finite element method on triangular elements (described in detail in Appendix \ref{sec:spatial}); however, TG-NDA can be used with any spatial discretization. We give the weak forms of NDA and SAAF. Their full derivations can be seen in Appendix \ref{sec:spatial}. 
 
 
 \subsubsection{Weak Form of Multigroup NDA}
 
 Given a function space $W_\mathcal{D}$, for all $\psi^*$ in $W_\mathcal{D}$, Find $\psi_{\rg} \in W_\mathcal{D}$ such that
-
+%
 \begin{equation}
  \begin{split}
-  \left(D_\rg \nabla \psi_\rg^{k+1/2}, \nabla \psi^*\right)_\mathcal{D} + \left(\vec{\bf{D}}_\rg \psi_\rg^{k+1/2} , \nabla \psi^*\right)_\mathcal{D} +  \left(\sigma_{r,\rg} \varphi_{\rg}^{k+1/2}, \psi^*\right)_\mathcal{D} &=  \\
-   \left(\sum\limits_{\substack{\rg'=1}}^\mm{g-1} \sigma_{\mm{s},\rg' \to\rg}\psi_{\rg}^{k+1/2}, \psi^*\right)_\mathcal{D} + \left(\sum\limits_{\substack{\rg'=\rg+1}}^\mm{G} \sigma_{\mm{s},\rg' \to\rg}\psi_{\rg}^{k}, \psi^*\right)_\mathcal{D} 
-  &+ \left(Q_{\rg}, \psi^*_\rg\right)_\mathcal{D} 
+  \left(D_\rg \nabla \psi_\rg^{k+1/2}, \nabla \psi^*\right)_\mathcal{D} + \left(\vec{\bf{D}}_\rg \psi_\rg^{k+1/2} , \nabla \psi^*\right)_\mathcal{D} +  \left(\Sigma_{r,\rg} \varphi_{\rg}^{k+1/2}, \psi^*\right)_\mathcal{D} &=  \\
+   \left(\sum\limits_{\substack{\rg'=1}}^\mm{g-1} \Sigma_{\mm{s},\rg' \to\rg}\psi_{\rg}^{k+1/2}, \psi^*\right)_\mathcal{D} + \left(\sum\limits_{\substack{\rg'=\rg+1}}^\mm{G} \Sigma_{\mm{s},\rg' \to\rg}\psi_{\rg}^{k}, \psi^*\right)_\mathcal{D} 
+  &+ \left(Q_{\rg}, \psi^*_\rg\right)_\mathcal{D} \:.
  \end{split}
  \label{k1/2}
 \end{equation}
@@ -272,9 +274,11 @@ Given a function space $W_\mathcal{D}$, for all $\psi^*_{\rg}$ in $W_\mathcal{D}
 
 \begin{equation}
 \begin{split}
-        \left ( \vec{\Omega}\frac{1}{\sigma_{t, rg}}\vec{\Omega}\cdot \vec{\nabla}\psi_\rg, \vec{\nabla}\psi* \right)_\mathcal{D} -     \left ( \vec{\Omega}\cdot \hat{n} \frac{1}{\sigma_{t, \rg}}\vec{\Omega} \cdot \vec{\nabla} \psi_\rg,\psi* \right )_{\Gamma} &+ \left ( \sigma_{t, \rg} \psi_\rg, \psi* \right )_\mathcal{D} = \\
-        \left ( q_\rg, \psi* \right)_\mathcal{D} + \left ( \vec{\Omega} \frac{q}{\sigma_{t, \rg}}, \vec{\nabla}\psi* \right)_\mathcal{D} &- \left ( \vec{\Omega}\cdot \hat{n} \frac{q_\rg}{\sigma_{t, \rg}}, \psi* \right)_{\Gamma} 
+        \left ( \vec{\Omega}\frac{1}{\Sigma_{t, rg}}\vec{\Omega}\cdot \vec{\nabla}\psi_\rg, \vec{\nabla}\psi* \right)_\mathcal{D} -     \left ( \vec{\Omega}\cdot \hat{n} \frac{1}{\Sigma_{t, \rg}}\vec{\Omega} \cdot \vec{\nabla} \psi_\rg,\psi* \right )_{\Gamma} &+ \left ( \Sigma_{t, \rg} \psi_\rg, \psi* \right )_\mathcal{D} = \\
+        \left ( q_\rg, \psi* \right)_\mathcal{D} + \left ( \vec{\Omega} \frac{q}{\Sigma_{t, \rg}}, \vec{\nabla}\psi* \right)_\mathcal{D} &- \left ( \vec{\Omega}\cdot \hat{n} \frac{q_\rg}{\Sigma_{t, \rg}}, \psi* \right)_{\Gamma} \:,
     \end{split}
 \end{equation}
 
 where $q = \int_{4\pi}(\Sigma_{s, \rg \rightarrow \rg'}\phi_\rg + Q)$.
+
+% you probably want a few sentences wrapping this chapter up. This feels like an abrupt ending. 
