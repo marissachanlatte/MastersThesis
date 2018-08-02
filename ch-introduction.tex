@@ -26,16 +26,18 @@ although they are equal in the limit as the spatial mesh is refined. However, se
 % which thing has second order accuracy? This also came out of nowhere
  can still be maintained with the high-order equation generally giving a more accurate shape and the conservative low-order equation giving a more accurate magnitude.
  % you never told us the low order equation is conservative.  
- The combination of the two equations has been found to be more accurate than either equation alone. \cite{morel-holo} \par
-Since its development, NDA has been tried with a variety of higher order equations, \cite{morel-holo}\cite{Wang2013} as well as spatial discretizations \cite{morel-holo}\cite{Schunert2017}. In this work, we explore NDA with the Self-Adjoint Angular Flux Equation (SAAF) and a continuous finite element discretization. \par
+ The combination of the two equations has been found to be more accurate than either equation alone \cite{morel-holo}.
+ 
+Since its development, NDA has been tried with a variety of higher order equations, \cite{morel-holo}\cite{Wang2013} as well as spatial discretizations \cite{morel-holo}\cite{Schunert2017}. In this work, we explore NDA with the Self-Adjoint Angular Flux Equation (SAAF) and a continuous finite element discretization.
+
 % the following paragraph is useful context. Needs to come earlier. 
 The steady-state transport equation is dependent on space, angle, and energy. It is often solved via a series of nested iterations. The various iteration methods and how they are used with each other are described in detail in Ch. \ref{sec:iterative}. The Nonlinear Diffusion Acceleration happens in the source iteration, where angle and energy are fixed. When energy is discretized into more than one energy group, an outer layer of iteration is introduced. One of the most commonly-used methods for iterating over energy groups is known as Gauss Seidel. Gauss Siedel is guaranteed to converge; however, in problems with significant upscattering, the time it takes to reach convergence can become arbitrarily slow. 
 % probably need a citation for that claim.
-\par
+
 A number of techniques to accelerate Gauss Seidel convergence have been developed \cite{morel-upscat} \cite{evans-upscat}, although to our knowledge none have yet been paired with NDA. The primary techniques used in commercial transport software rely on a rebalance scheme and coarse-mesh finite-difference diffusion.
 % I'm not sure we can understand what that means either. 
-Although these methods are widely used and successful for acceleration, they are very sensitive to the coarse mesh size. Rebalancing with too fine a mesh may be divergent, and an overly coarse mesh degrades performance. \cite{evans-upscat}
-\par
+Although these methods are widely used and successful for acceleration, they are very sensitive to the coarse mesh size. Rebalancing with too fine a mesh may be divergent, and an overly coarse mesh degrades performance \cite{evans-upscat}.
+
 While for standard problems, the proper mesh size is generally well understood;
 % I don't know what is a standard problem; shielding isn't non-standard...???
  this is not the case for shielding problems. Adams and Morel developed an upscatter acceleration scheme known as the Two-Grid method. An estimation of the error at each Gauss Seidel iteration is calculated using a collapsed in energy, one-group diffusion equation and energy eigenvector of the Gauss Seidel iteration matrix. These
@@ -43,80 +45,82 @@ While for standard problems, the proper mesh size is generally well understood;
   make up the correction term to the scalar flux at each group, which is applied at each iteration. In one dimensional calculations, Adams and Morel have demonstrated their method to be very efficient for thermal upscattering problems \cite{morel-upscat}.
 
 \section{The Boltzmann Transport Equation}
-The angular neutron flux of a reactor, $\psi$ can be described by the steady state Boltzmann Transport equation.
-
+The angular neutron flux of a reactor, $\psi$ can be found by solving the steady state Boltzmann Transport equation,
+%
 \begin{equation}
 \begin{split}
- [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \chi(E) \int_0^\infty dE' \nu \Sigma_{f}(\vec{r}, E') \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}, E') \\   &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E')   
+ [\hat{\Omega} \cdot \nabla + &\Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) = \chi(E) \int_0^\infty dE' \nu \Sigma_{f}(\vec{r}, E') \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}', E') \\   &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E') + Q(\vec{r}, \hat{\Omega}, E)   \:,
 \end{split}
 \label{eq:transport}
 \end{equation}
 
 
-where $\hat{\Omega}$ represents the angle; $\vec{r}$, the position vector; $E$, the energy; $\Sigma$, the total macroscopic cross-section; $\Sigma_f$, the macroscopic fission cross-section; $\Sigma_s$, the macroscopic scattering cross section; $\chi$, the energy distribution; and $\nu$, the average number of neutrons per fission. 
+where $\hat{\Omega}$ represents the angle; $\vec{r}$, the position vector; $E$, the energy; $\Sigma$, the total macroscopic cross-section; $\Sigma_f$, the macroscopic fission cross-section; $\Sigma_s$, the macroscopic scattering cross section; $\chi$, the fission energy distribution; $\nu$, the average number of neutrons per fission; and $Q$, an external source. 
 
-We apply an incident boundary condition, where for $\hat{n} \cdot \hat{\Omega} < 0$, with $\hat{n}$ being the outward normal on the boundary $\partial \mathcal{D}$
+In this work, we apply an incident boundary condition, where for $\hat{n} \cdot \hat{\Omega} < 0$, with $\hat{n}$ being the outward normal on the boundary $\partial \mathcal{D}$,
 \begin{equation}
-    \psi(\vec{r}, \hat{\Omega}, E) = \psi^{inc}(\vec{r}, \hat{\Omega}, E), \hspace{5mm} \vec{r} \in \partial \mathcal{D}
+    \psi(\vec{r}, \hat{\Omega}, E) = \psi^{inc}(\vec{r}, \hat{\Omega}, E), \hspace{5mm} \vec{r} \in \partial \mathcal{D}\:,
 \end{equation}
+though other boundary conditions such as reflecting, periodic, and vacuum are valid.
 
 \subsection{Forms of the Transport Equation}
-There are are several forms of the transport equaution that are of interest in the field of nuclear energy. In this work we present all methods in fixed-source form, however they can all be easily extended to $k$-eigenvalue form for criticality calculations. 
+There are are several forms of the transport equation that are of interest in the field of nuclear energy. 
 
 \subsubsection{Fixed Source Form}
-In the fixed source form, we assume there is no fission and that there is an external neutron source, $Q$. We use the same boundary conditions as above. 
-
+To write Eqn.~\eqref{eq:transport} in a fixed source form, we drop the fission term and retain the source, $Q$. If there is fission in the system, fission neutrons can be included in the source term. We use the same boundary conditions as above. 
+%
 \begin{equation}
 \begin{split}
- [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \\ \int_0^\infty dE' &\int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E')  + Q 
+ [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \\ \int_0^\infty dE' &\int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E')  + Q(\vec{r}, \hat{\Omega}, E)
 \end{split}
  \label{eq:transport_fixed_source}
 \end{equation}
 
 \subsubsection{$k$-Eigenvalue Form}
-If the chain reaction is self-sustaining and time-independent, the reactor is known as ``critical." To maintain criticality, the asymptotic neutron distribution must not be changing over time. This behavior can be described by a parameter,  $k$, the ratio of neutrons in two successive generations. We scale $\nu$ in Eq. \eqref{eq:transport} by $k$ to express the deviation from critical. This gives the following equation,
-
+When fission is in a system, we are often interested in the multiplication behavior, which can be described by a parameter, $k$, the ratio of neutrons in two successive generations. If the chain reaction is self-sustaining and time-independent, the reactor is known as ``critical" and $k=1$. A $k>1$ gives an increasing population, termed supercritical, and $k<1$ gives a subcritical, decreasing population. We scale $\nu$ in Eq. \eqref{eq:transport} by $k$ to express the deviation from critical. This gives the following equation,
+%
 \begin{equation}
     \label{eq:transport_eigenvalue}
     \begin{split}
-        [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \frac{\chi(E)}{4\pi k} \int_0^\infty dE' \nu \Sigma_{f}(\vec{r}, E') \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}, E') \\ &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E') 
+        [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \frac{\chi(E)}{4\pi k} \int_0^\infty dE' \nu \Sigma_{f}(\vec{r}, E') \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}', E') \\ &+ \int_0^\infty dE' \int_{4\pi} d\hat{\Omega}' \Sigma_s(\vec{r}, E' \rightarrow E, \hat{\Omega}' \cdot \hat{\Omega})\psi(\vec{r}, \hat{\Omega}', E') \ :,
     \end{split}
 \end{equation}
+where the $\frac{1}{4\pi}$ is added to represent that fission neutrons are born isotropically. We again using the same boundary conditions. 
 
-Again using the same boundary conditions. \eqref{eq:transport_eigenvalue} is simply an eigenvalue problem that with some algebraic manipulation can be thought of in the form $A\psi = \frac{1}{k} F\psi$ and solved via standard eigenvalue solvers. 
+Eqn.~\eqref{eq:transport_eigenvalue} is an eigenvalue problem that, with some algebraic manipulation, can be written of in the form $A\psi = \frac{1}{k} F\psi$ and solved via standard eigenvalue solvers. 
+
+In this work, we present all methods in fixed-source form; however, they can all be easily extended to $k$-eigenvalue form for criticality calculations. 
 
 \section{Space-Angle Approximations of Interest}
-In this work we are primarily concerned with the fixed source form of the transport equation, although all of our methods can be used with the eigenvalue form by replacing the fixed source $Q$ with $\frac{1}{k}\nu\Sigma_f$. For ease we assume our scattering and fixed sources are isotropic, which gives the following form
-
+There are many simplifications and approximations that can be made to facilitate the solution of the transport equation. In this work, we assume our scattering and fixed sources are isotropic, which gives the following form
+%
 \begin{equation}
 \begin{split}
- [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \\  \int_0^\infty \frac{1}{4\pi} &\Sigma_s(\vec{r}, E' \rightarrow E)  dE' \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}', E')  + \frac{1}{4\pi}Q 
+ [\hat{\Omega} \cdot \nabla + \Sigma(\vec{r}, E)]\psi(\vec{r}, \hat{\Omega}, E) &= \\ \frac{1}{4\pi}  \int_0^\infty &\Sigma_s(\vec{r}, E' \rightarrow E)  dE' \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}', E')  + \frac{1}{4\pi}Q \:.
 \end{split}
  \label{eq:transport_isotropic_scattering}
 \end{equation}
-
-
-This equation gives the angular flux. To find the scalar flux, $\phi$, we must integrate over all directions.
+%
+This equation gives the angular flux. To find the scalar flux, $\phi$, which is often the quantity desired in practice at it is used to give the reactions rates needed for engineering solutions, we must integrate over all directions
 \begin{equation}
-    \phi(\vec{r}, E) = \int_{4\pi} \phi(\vec{r}, \hat{\Omega}, E) d \Omega.
+    \phi(\vec{r}, E) = \int_{4\pi} \phi(\vec{r}, \hat{\Omega}, E) d \Omega \:.
 \end{equation}
 
 \subsection{Self-Adjoint Angular Flux}
-Discretizing the traditional transport equation \eqref{eq:transport_isotropic_scattering} in space, particularly using the finite element method presents a number of challenges \cite{saaf}. A finite element spatial discretization is generally favorable as it produces as symmetric positive-definite (SPD) linear system. SPD systems can be solved using a number of well-studied, robust solution techniques. In order to make use of these properties, we must rearrange the standard transport equation into a form that is more computationally friendly, a self-adjoint form \cite{saaf}.
+Discretizing the traditional transport equation, Eqn.~\eqref{eq:transport_isotropic_scattering}, in space, particularly using the finite element method, presents a number of challenges \cite{saaf}. A finite element spatial discretization is generally favorable as it produces as symmetric positive-definite (SPD) linear system. SPD systems can be solved using a number of well-studied, robust solution techniques. In order to make use of these properties, we must rearrange the standard transport equation into a form that is more computationally friendly, a self-adjoint form \cite{saaf}.
 
-
-
-The monoenergetic version of the Self-Adjoint Angular Flux equation appropriate for $S_n$ calculations is as follows:
+The monoenergetic version of the Self-Adjoint Angular Flux equation appropriate for $S_N$ calculations is 
+% you didn't tell us what an SN calculation is yet
 \begin{equation}
-    - \vec{\Omega} \cdot \nabla \frac{1}{\Sigma_t}\vec{\Omega} \cdot \nabla \psi + \Sigma_t \psi = \frac{1}{4\pi}[\Sigma_s\phi + Q - \vec{\Omega} \cdot \nabla \frac{(\Sigma_s\phi + Q)}{\Sigma_t}]
+    - \vec{\Omega} \cdot \nabla \frac{1}{\Sigma_t}\vec{\Omega} \cdot \nabla \psi + \Sigma_t \psi = \frac{1}{4\pi}[\Sigma_s\phi + Q - \vec{\Omega} \cdot \nabla \frac{(\Sigma_s\phi + Q)}{\Sigma_t}]\:.
     \label{eq:SAAF}
 \end{equation}
-Where $\vec{\Omega}$ are the angles, $\Sigma_t$ is the total cross section, $\psi$ is the angular flux, $\Sigma_s$ is the scattering cross section, $\phi$ is the scalar flux, and $Q$ is the fixed source.
+% do you use the monoenergetic form? This section feels a little out of nowhere. Maybe an additional sentence or two telling us why you're telling us this out of every possible spatial discretization form. 
 
 
 \subsection{The Diffusion Equation}
-To simplify even further, we employ a commonly used approximation known as the diffusion equation. To derive, assume all neutrons have the same energy and consider the neutron balance within an infinitesimal volume centered at a point, $r$. Under steady state conditions, neutron conservation requires
-
+To simplify even further, we employ a commonly-used approximation known as the diffusion equation. To derive the diffusion equation, we consider the neutron balance within an infinitesimal volume centered at a point, $r$. For simplicity of notation,we will present this derivation assuming all neutrons have the same energy. Under steady state conditions, neutron conservation requires
+%
 \begin{equation}
     \textit{neutrons leaking out} + \textit{neutrons absorbed} = \textit{source neutrons emitted}.
 \end{equation}
