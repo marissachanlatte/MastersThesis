@@ -47,9 +47,10 @@ where $\nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P_\rg} =  \Ome
   \begin{equation}
   \epsilon_\rg^{k+1/2} := \phi_\rg - \phi_\rg^{k + 1/2} \quad \mm{and} \quad R_\rg^{k+1/2} := \sum\limits_{\rg'=\rg+1}^\mm{G} \Sigma_{\mm{s},\rg' \rg}\left(\phi_{\rg'}^k - \phi_{\rg'}^{k + 1/2}\right)\:.
   \end{equation}
-  $\epsilon_\rg^{k + 1/2}$ can be further broken into the spatial component $\phi_{\epsilon}$ and scattering spectrum $\xi_\rg$ as defined in \cite{morel-upscat,evans-upscat}.
+  $\epsilon_\rg^{k + 1/2}$ can be further broken into the spatial component $\phi_{\epsilon}$ and scattering spectrum $\xi_\rg$ as defined in \cite{morel-upscat, evans-upscat}.
   \begin{equation}
   \epsilon_\rg^{k+1/2} = \phi_{\epsilon}^{k+1/2}\left(\vec{r}\right)\xi_\rg, \hspace{5mm} \sum\limits_{\rg=1}^G \xi_\rg = 1.
+  \label{eq:decomp}
   \end{equation}
   
   We calculate $\xi$ using the procedure outlined in \cite{evans-upscat}. Performing a Fourier analysis of the Gauss-Seidel iteration process, assuming isotropic scattering in an infinite medium, gives the following eigenproblem. 
@@ -78,4 +79,15 @@ where $\nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P_\rg} =  \Ome
   \end{equation}
   where $\left< X \right> = \sum\limits_{\rg = 1}^G X_\rg $ and $\Sigma_{a,\rg}  = \Sigma_{r,\rg}\xi_\rg - \sum\limits_{\rgp\neq\rg} \Sigma_{s,\rg'\rightarrow \rg} \xi_{\rg'}$.
   \par
-  By solving \eqref{eq:collapsed} with the same spatial discretization as the NDA solve, we correct the scalar flux from the previous Gauss Seidel iteration as $\phi_\rg^{k+1} = \phi_\rg^{k+1/2} + \epsilon_\rg^{k+1/2}$.
+  By solving \eqref{eq:collapsed} with the same spatial discretization as the NDA solve, we correct the scalar flux from the previous Gauss Seidel iteration as $\phi_\rg^{k+1} = \phi_\rg^{k+1/2} + \epsilon_\rg^{k+1/2}$. The procedure goes as follows:
+  \vspace{5mm}
+
+  TG-NDA Update Procedure
+  \begin{enumerate}
+      \item Solve \eqref{eq:k1/2} using NDA iteration to find $\phi_\rg^{k+1/2}$ for each group, $\rg$. 
+      \item Solve \eqref{eq:collapsed} to find $\phi_\epsilon^{k+1/2}$. 
+      \item Solve \eqref{eq:eigenvector} to find $\xi$. 
+      \item Use \eqref{eq:decomp} to find $\epsilon_\rg^{k+1/2}$ and apply to each group to get $\phi_\rg^{k+1}$ for all $\rg$. 
+      \item Check for convergence between $\phi_\rg^{k+1}$ and $\phi_\rg^{k}$.
+      \item Repeat until all groups have converged.
+  \end{enumerate}

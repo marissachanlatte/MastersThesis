@@ -1,19 +1,33 @@
+In this section we present results of numerical experiments testing the convergence of TG-NDA and NDA. We first test on a simple one material problem with constant source. The second test consists of two materials and a box source. 
+
+\section{NDA Accuracy}
+
+To ensure the validity of our results, we first establish that NDA is providing an accurate approximation of the transport equation. We check to see that it sufficiently corrects the diffusion equation, as observed in other studies \cite{morel-holo, Wang2013}. We ran a number of test problems to observe this behavior. For ease of comparison among the three methods, we display test results in a line-out plot, where $y$ is fixed. We observed the behavior shown to be representative of any line through the domain. Fig. \ref{fig:comparison} illustrates a line-out plot fixed at $y=0.25$, from a one material, one group problem with scattering. NDA shows a significant correction to diffusion, maintaining most of the accuracy of the higher order equation. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75\textwidth]{fig/LineOut25.png}
+    \caption{Comparison of Diffusion, SAAF, and NDA}
+    \label{fig:comparison}
+\end{figure}
+
+We were only able to run the NDA/SAAF comparison for smaller test problems, as the computational cost of running SAAF for our experiments with upscattering was prohibitively high.  However, as the test problems were consistent with the Fig. \ref{fig:comparison}, we assume NDA is faithfully modeling neutron transport. 
+
 \section{One Material}
-For the first test problem we used a single material with  upscattering throughout a 20 by 20 domain with a constant source. We used cross sections for the seven group moderator material in the C5G7 benchmark problem. \cite{C5G7}.  
+For the first test problem we used a single material with  upscattering throughout a 20 by 20 domain with a constant source. We used cross sections for the seven group moderator material in the C5G7 benchmark problem \cite{C5G7}.  
 The problems were run on a single processor of a MacBook Pro. 
 \begin{center}
     \begin{tabular}{|c|c|c|}
     \hline
     & Runtime (s) & GS Iterations \\
     \hline
-    TG-NDA & 5465.00732 & 9 \\
+    TG-NDA & 5465.01 & 9 \\
     NDA & 14513.23 & 31 \\
     \hline
     \end{tabular}
 \end{center}
-The two-grid method provides a considerable acceleration of the Gauss-Seidel method. While when using TG-NDA each iteration takes slightly longer as the correction term must be calculated, it more than makes up for it with a considerable decrease in the number of iterations necessary to reach convergence. 
+The two-grid method provides a considerable acceleration of the Gauss-Seidel method. It is able to converge in roughly 30\% the number of iterations and roughly 37\% the time.  While with TG-NDA each iteration takes slightly longer as the correction term must be calculated, it more than makes up for it with a considerable decrease in the number of iterations necessary to reach convergence. 
 
-Importantly, the accleration in convergence came at no cost to accuracy. As can be seen in the figure below, the NDA and TG-NDA solutions have the same values (up to tolerance). In the interest of space, we only show the results from the highest energy group, but the NDA/TG-NDA agreement held for all energy groups in our test problems. 
+Importantly, the acceleration in convergence came at no cost to accuracy. As can be seen in the figure below, the NDA and TG-NDA solutions have the same values (up to tolerance). In the interest of space, we only show the results from the highest energy group, but the NDA/TG-NDA agreement held for all energy groups in our test problems.
 \begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
@@ -51,7 +65,7 @@ The second problem consists of two materials in a concentric geometry with a box
     \end{tabular}
 \end{center}
 
-Again, TG-NDA showed a significant improvement over the unaccelerated Gauss Seidel, taking roughly a third of the number of iterations. Again, NDA and TG-NDA agree in terms of flux values. Here we also only show results for the highest energy group. 
+Again, TG-NDA showed a significant improvement over the unaccelerated Gauss Seidel, taking roughly 40\% of the time and 32\% of the iterations. Here we show results for the highest energy group as well as the first thermal group. We can again see the agreement in flux values between the two methods. 
 \begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
@@ -64,6 +78,24 @@ Again, TG-NDA showed a significant improvement over the unaccelerated Gauss Seid
   \centering
   \includegraphics[width=\linewidth]{fig/tgnda_iron-water_scalar_flux_group0.png}
   \caption{Highest Energy Group, TG-NDA}
+  \label{fig:TG-NDA-Mod}
+\end{subfigure}
+\caption{Comparison of NDA/TG-NDA in Flux Value for Two Material Problem}
+\label{fig:Moderator}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/nda_iron-water_scalar_flux_group3.png}
+  \caption{First Thermal Energy Group, NDA}
+  \label{fig:NDA-Mod}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{fig/tgnda_iron-water_scalar_flux_group3.png}
+  \caption{First Thermal Energy Group, TG-NDA}
   \label{fig:TG-NDA-Mod}
 \end{subfigure}
 \caption{Comparison of NDA/TG-NDA in Flux Value for Two Material Problem}
