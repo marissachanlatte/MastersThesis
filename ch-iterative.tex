@@ -19,7 +19,9 @@ The three formulations that are discussed, NDA, TG-NDA, and SAAF, can be solved 
 
 \section{Implemented Solvers}
 \subsection{Linear Solver}
+
 For our linear solver we used SciPy's conjugate gradient (CG) solver \cite{SciPy} \cite{Shewchuck1994}. CG solves the system $Ax = b$ assuming $A$ is a real, symmetric, positive-definite matrix. By using the finite element method, we are guaranteed that our matrix $A$ satisfies those constraints, so CG is an applicable method for our problem.
+
 
 \subsection{Within Group Solver - NDA}
 The inner solves are handled by NDA, which is a correction to source iteration. In source iteration, the $\psi$ on the right hand side of the equation starts with an initial guess. At each iteration, the linear system is solved and $\psi$ is updated with the result of that solve. This continues until the values converge as can be seen in Algorithm \ref{ag:SI}.
@@ -36,8 +38,10 @@ The inner solves are handled by NDA, which is a correction to source iteration. 
 \label{ag:SI}
 \end{algorithm}
 
-NDA adds an extra step to this process by first calculating the angular flux using a higher order equation and then solving the lower order equation using the result of the higher order equation to compute a correction. The result of the lower order solve is then used as the guess on the right hand side during the next iteration.  This process is described with iteration index $l$ as
-%
+
+NDA adds an extra step to this process by first calculating the angular flux using a higher order equation and then solving the lower order equation using the result of the higher order equation to compute a correction. The result of the lower order solve is then used as the guess on the right hand side during the next iteration. \\
+For ease of reference, we repeat the NDA+SAAF algorithm given in Ch. \ref{sec:intro} using iteration index $l$: 
+
 \begin{enumerate}
     \item Intitialize system, by setting $\vec{\textbf{D}}$ to 0 and solving Eqn.~\eqref{eq:NDA_1g} to get $\phi^0$ 
     \item Loop Until Convergence:

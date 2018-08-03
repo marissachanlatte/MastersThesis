@@ -11,6 +11,7 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage{lmodern}
+\usepackage{lipsum}
 \usepackage{todonotes}
 \usepackage[titletoc]{appendix}
 % necessary commands
@@ -33,9 +34,9 @@
 \author{Marissa Ramirez Zweiger }
 \date{July 27th, 2018}
 
-\pagenumbering{roman}
-\begin{document}
 
+\begin{document}
+\pagestyle{empty}
 \begin{center}
 A Two-Grid, Nonlinear Diffusion Acceleration Method  \\ 
 for the $S_N$ Equations with Neutron Upscattering \\
@@ -72,12 +73,21 @@ Professor Massimiliano Fratoni \\
 Summer 2018
 \end{center}
 
+
+
+\renewcommand{\abstractname}{Acknowledgements}
+\begin{abstract}
+\pagenumbering{roman}
+\thispagestyle{plain}
+I would like to acknowledge my advisers, Dr. Rachel Slaybaugh and Dr. Phillip Colella, as well as my third committee member, Dr. Max Fratoni, for their guidance. This work would not have been possible without the mentorship of Dr. Weixiong Zheng - Thank you. I am also particularly appreciative of my colleagues, Joshua Rehak and Mario Ortega who were always willing to talk through concepts and let me bounce ideas off of them. 
+
+Most of all, my gratitude goes to my family. Thank you to my mother, Andrea Ramirez, who has always been a constant source of support and to my partner in all things, Marcell Vazquez-Chanlatte, for always having handy the things I've needed most: useful python tricks, a blackboard, and a warm cup of tea. 
+\end{abstract}
+
 \tableofcontents
 
-
-
 \chapter{Introduction}
-\setcounter{page}{1}
+\setcounter{page}{2}
 \pagenumbering{arabic}
 \label{sec:intro}
 \input{ch-introduction.tex}
@@ -91,9 +101,9 @@ Summer 2018
 \label{sec:iterative}
 \input{ch-iterative.tex}
 
-\chapter{Testing \& Validation}
-\label{sec:testing}
-\input{ch-testing.tex}
+% \chapter{Testing \& Validation}
+% \label{sec:testing}
+% \input{ch-testing.tex}
 
 \chapter{Numerical Results}
 \label{sec:results}
