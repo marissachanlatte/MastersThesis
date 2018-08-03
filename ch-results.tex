@@ -1,8 +1,8 @@
-In this section we present results of numerical experiments testing the convergence of TG-NDA and NDA. We first test on a simple one material problem with constant source. The second test consists of two materials and a box source. 
+In this section I present results of numerical experiments testing the convergence of TG-NDA and NDA. We first test on a simple one material problem with constant source. The second test consists of two materials and a box source. 
 
 \section{NDA Accuracy}
 
-To ensure the validity of our results, we first establish that NDA is providing an accurate approximation of the transport equation. We check to see that it sufficiently corrects the diffusion equation, as observed in other studies \cite{morel-holo, Wang2013}. We ran a number of test problems to observe this behavior. For ease of comparison among the three methods, we display test results in a line-out plot, where $y$ is fixed. We observed the behavior shown to be representative of any line through the domain. Fig. \ref{fig:comparison} illustrates a line-out plot fixed at $y=0.25$, from a one material, one group problem with scattering. NDA shows a significant correction to diffusion, maintaining most of the accuracy of the higher order equation. 
+To ensure the validity of our results, I must first establish that NDA is providing an accurate approximation of the transport equation. I ran a number of test problems to check to see that it sufficiently corrects the diffusion equation, as observed in other studies \cite{morel-holo, Wang2013}. For ease of comparison among the three methods, I display test results in a line-out plot, where $y$ is fixed. I observed the behavior shown to be representative of any line through the domain. Fig. \ref{fig:comparison} illustrates a line-out plot fixed at $y=0.25$, from a one material, one group problem with scattering. NDA shows a significant correction to diffusion, maintaining most of the accuracy of the higher order equation. 
 \begin{figure}[H]
     \centering
     \includegraphics[width=.75\textwidth]{fig/LineOut25.png}
@@ -10,11 +10,11 @@ To ensure the validity of our results, we first establish that NDA is providing 
     \label{fig:comparison}
 \end{figure}
 
-We were only able to run the NDA/SAAF comparison for smaller test problems, as the computational cost of running SAAF for our experiments with upscattering was prohibitively high.  However, as the test problems were consistent with the Fig. \ref{fig:comparison}, we assume NDA is faithfully modeling neutron transport. 
+I was only able to run the NDA/SAAF comparison for smaller test problems, as the computational cost of running SAAF for my experiments with upscattering was prohibitively high.  However, as the test problems were consistent with the Fig. \ref{fig:comparison}, it is assumed that NDA is faithfully modeling neutron transport. 
 
 \section{One Material}
-For the first test problem, we used a single material with upscattering throughout a 20cm by 20cm domain with a constant unit source throughout the domain. 
- We used cross sections for the seven-group moderator material in the C5G7 benchmark problem \cite{C5G7}.  
+For the first test problem, I used a single material with upscattering throughout a 20cm by 20cm domain with a constant unit source throughout the domain. 
+ I used cross sections from the seven-group moderator material in the C5G7 benchmark problem \cite{C5G7} to test a material with upscattering.  
  \begin{table}[!htb]
 \small
 \centering
@@ -63,7 +63,7 @@ The problems were run on a single 2.7 GHz Intel Core i5 processor of a MacBook P
 
 The two-grid method provides a considerable acceleration of the Gauss Seidel method. It is able to converge in roughly 30\% the number of iterations and roughly 37\% the time. While when using TG-NDA each iteration takes slightly longer as the correction term must be calculated, there is a considerable decrease in the number of iterations necessary to reach convergence. 
 
-Importantly, the acceleration in convergence came at no cost to accuracy. As can be seen in Figure~\ref{fig:Moderator}, the NDA and TG-NDA solutions have the same values (up to tolerance). In the interest of space, we only show the results from the highest energy group, but the agreement between NDA and TG-NDA held for all energy groups in our test problems. The full results can be found on github at www.github.com/mzweig/gallo/test/benchmarks.
+Importantly, the acceleration in convergence came at no cost to accuracy. As can be seen in Figure~\ref{fig:Moderator}, the NDA and TG-NDA solutions have the same values (up to tolerance). In the interest of space, I only show the results from the highest energy group, but the agreement between NDA and TG-NDA held for all energy groups in our test problems. The full results can be found on github at www.github.com/mzweig/gallo/test/benchmarks.
 
 \begin{figure}[H]
 \centering
