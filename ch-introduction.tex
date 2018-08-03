@@ -18,7 +18,7 @@ The angular neutron flux of a reactor, $\psi$ can be found by solving the steady
 \label{eq:transport}
 \end{equation}
 
-where $\hat{\Omega}$ represents the angle; $\vec{r}$, the position vector; $E$, the energy; $\Sigma_t$, the total macroscopic cross-section; $\Sigma_f$, the macroscopic fission cross-section; $\Sigma_s$, the macroscopic scattering cross section; $\chi$, the energy distribution; and $\nu$, the average number of neutrons per fission; and $Q$, an external source.  
+where $\hat{\Omega}$ represents the angle; $\vec{r}$, the position vector; $E$, the energy; $\Sigma_t$, the total macroscopic cross-section; $\Sigma_f$, the macroscopic fission cross-section; $\Sigma_s$, the macroscopic scattering cross section; $\chi$, the energy distribution with which neutrons are born; $\nu$, the average number of neutrons per fission; and $Q$, an external source.  
 
 
 In this work, I apply an incident boundary condition, where for $\hat{n} \cdot \hat{\Omega} < 0$, with $\hat{n}$ being the outward normal on the boundary $\partial \mathcal{D}$,
@@ -46,9 +46,10 @@ There are many simplifications and approximations that can be made to facilitate
 %
 \begin{equation}
 [\hat{\Omega} \cdot \nabla + \Sigma_t(\vec{r}, E)] \psi(\vec{r}, \hat{\Omega}, E) =   \int_0^\infty \frac{1}{4\pi} \Sigma_s(\vec{r}, E' \rightarrow E)  dE' \int_{4\pi} d\hat{\Omega}'\psi(\vec{r}, \hat{\Omega}', E')  + \frac{1}{4\pi}Q(\vec{r}, \hat{\Omega}, E) .
+
  \label{eq:transport_isotropic_scattering}
 \end{equation}
-%
+
 This equation gives the angular flux. To find the scalar flux, $\phi$, which is often the quantity desired in practice as it is used to give the reactions rates needed for engineering solutions, one must integrate over all directions
 
 \begin{equation}
@@ -62,6 +63,7 @@ To simplify even further, I employ a commonly-used approximation, the one-group 
 \begin{equation}
     \textit{net streaming} + \textit{neutrons absorbed} = \textit{source neutrons emitted}.
 \end{equation}
+
 The net streaming is described as the rate of the current, $\vec{J} = \int_{4\pi} \vec{\Omega}\psi$, in all directions; the neutrons absorbed is the absorption cross section times the scalar flux, $\Sigma_a\phi$; and the source neutrons are represented by the source variable, $Q$. This gives the neutron continuity equation
 
 \begin{equation}
@@ -82,6 +84,7 @@ The diffusion equation is much easier to solve than the transport equation becau
 \subsection{Nonlinear Diffusion Acceleration}
 
 This work presents an acceleration to a method known as Nonlinear Diffusion Acceleration (NDA). NDA reformulates the transport equation as a correction to the diffusion equation and uses a two step process to solve. For reference, I repeat the derivation of the low-order NDA equation found in \cite{morel-holo} with small modifications. I assume no fission source and vacuum boundary conditions. Consider the first order, one-group, fixed-source form with isotropic scattering. 
+
 
   \begin{equation}
   \hat{\Omega}\cdot \nabla \psi \left(\vec{r}\right)+ \Sigma_{\mm{t}}\left(\vec{r}\right)\psi = \frac{1}{4 \pi} \Sigma_{\mm{s}}\left(\vec{r}\right) \phi\left(\vec{r}\right) + \frac{1}{4 \pi} Q\:.
@@ -152,6 +155,7 @@ NDA and SAAF work together as an acceleration to the source iteration process. S
 
 I am able to replicate the results of \cite{Wang2013}, showing a significant reduction in the number of source iterations necessary when using NDA with SAAF as compared to SAAF alone. However, it is important to note that NDA only accelerates one layer of iteration - the within-group solve. In the following sections I will discuss the acceleration of the multigroup solver.
 
+
 \section{Methods of Discretization}
 The angular flux, $\psi$, is a function of space, angle, and energy. In the solution process, each dimension is discretized. There are several choices that have to be made regarding discretization. In this work, I endeavor to show equation forms that are discretization agnostic as well as showing formulations unique to the particular discretization methods I chose to implement. 
 
@@ -209,12 +213,12 @@ Given a function space $W_\mathcal{D}$, for all $\psi^*$ in $W_\mathcal{D}$, Fin
  \end{split}
  \label{k1/2}
 \end{equation}
-
+%
 where the parentheses represent the inner product integrated over a domain $\mathcal{D}$ for a given direction.
 
 \subsubsection{Weak Form of Multigroup SAAF}
 Using the boundary condition treatment given in \cite{zheng-thesis}, gives the following weak form:
-
+% Correct this part
 Given a function space $W_\mathcal{D}$, for all $\psi^*_{\rg}$ in $W_\mathcal{D}$, Find $\psi_{\rg} \in W_\mathcal{D}$ such that,
 
 \begin{equation}
