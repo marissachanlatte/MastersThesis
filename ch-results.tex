@@ -1,4 +1,7 @@
-In this section I present results of numerical experiments testing the convergence of TG-NDA and NDA. We first test on a simple one material problem with constant source. The second test consists of two materials and a box source. 
+In this section I present results of numerical experiments testing the convergence of TG-NDA and NDA. We first test on a simple one-material problem with constant source. The second test consists of two-materials and a box source. 
+% you need to lay out more of what's coming. What are you testing and why. What are you going to show?
+% I think the main problem max is having is that this section needs to be more meaningful. 
+% Tell us more to help illustrate why this is enough work to show this method is valuable.
 
 \section{NDA Accuracy}
 
@@ -10,7 +13,10 @@ To ensure the validity of our results, I must first establish that NDA is provid
     \label{fig:comparison}
 \end{figure}
 
-I was only able to run the NDA/SAAF comparison for smaller test problems, as the computational cost of running SAAF for my experiments with upscattering was prohibitively high.  However, as the test problems were consistent with the Fig. \ref{fig:comparison}, it is assumed that NDA is faithfully modeling neutron transport. 
+I was only able to run the NDA comparison with SAAF 
+% don't write these as ratios unless you took ratios
+for smaller test problems, as the computational cost of running SAAF for my experiments with upscattering was prohibitively high.  However, as the test problems were consistent with Fig. \ref{fig:comparison}, it is assumed that NDA is faithfully modeling neutron transport. 
+% I don't know what this sentence means.
 
 \section{One Material}
 For the first test problem, I used a single material with upscattering throughout a 20cm by 20cm domain with a constant unit source throughout the domain. 
@@ -42,6 +48,7 @@ $7$  & 0       &        0        &   0      &     0      &     0   &    1.32440E
     \end{tabular}
 \end{center}
 \end{table}
+% For both scattering matrices, it would be good to call out the relevant features. Talk about amount of upscattering in terms of # of groups and magnitude; compare the two materials to one another as well. 
 
 The problems were run on a single 2.7 GHz Intel Core i5 processor of a MacBook Pro and the results are show in Table~\ref{tab:onemat}.
 \begin{table}[!htb]
