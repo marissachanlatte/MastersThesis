@@ -1,5 +1,11 @@
 
-In this section I present results of numerical experiments testing the convergence of TG-NDA and NDA. We first test on a simple one-material problem with a uniform source throught the domain. The second test consists of two-materials and a box source. 
+In this section, I present the results of numerical experiments testing the convergence of TG-NDA and NDA. The implementation I wrote was designed as a proof of concept to support my theoretical work. It is a serial, python code capable of running small toy problems. Because of the promising results shown here, the Slaybaugh Lab plans to adopt TG-NDA in their full scale C++ transport code that supports running problems in parallel and will be able to test larger, more realistic problems in the future.
+
+In large, realistic transport simulations there are many components working together to produce a final flux profile. In this proof of concept, I chose to strip down the problem as much as I could to focus strongly on the effects of TG-NDA itself. The key feature that TG-NDA addresses is the presence of upscattering. In designing my test problems, I worked to develop the simplest problem that would test that key feature of TG-NDA. This first problem takes the form of a one material problem, on a square domain with a uniform source of one. The results of this problem alone show the potential of TG-NDA. A reduction by a factor of three in the number of Gauss-Seidel iterations is observed and the problem is completed roughly 40\% of the runtime. 
+
+After showing a proof of concept in the simplest case, the second test inches towards more realistic problems. The two grid method requires the computation of the eigenvector, $\xi$ for each material. To see if that extra computation would significantly affect the runtime improvement, I designed a two material problem to test. Again, as this is meant to be a proof of concept, the fidelity of the materials to those used in real applications is not of interest, only that there is more than one of them and they both have upscattering. I created the second material myself, by maintaining the total cross sections and scattering structure of the C5G7 material, doubling the absorption and decreasing the within group scattering by an appropriate amount. In this problem, the source is confined to the center of the domain and the fast energy groups. Again the problem is solved in roughly a third of the iterations and 40\% of the runtime - A very promising result. 
+
+These calculations are not meant to be representative of results for large shielding problems or full core simulations. These results support the potential the novel method derived in this work, TG-NDA. It is hoped that these results will stimulate more work in this direction, encouraging developers of larger scale transport codes to consider adopting this method. The details of the test problems discussed and numerical results are given in the following sections. 
 % you need to lay out more of what's coming. What are you testing and why. What are you going to show?
 % I think the main problem max is having is that this section needs to be more meaningful. 
 % Tell us more to help illustrate why this is enough work to show this method is valuable.
@@ -7,7 +13,7 @@ In this section I present results of numerical experiments testing the convergen
 
 \section{NDA Accuracy}
 
-To ensure the validity of our results, I must first establish that NDA is providing an accurate approximation of the transport equation. I ran a number of test problems to check to see that it sufficiently corrects the diffusion equation, as observed in other studies \cite{morel-holo, Wang2013}. For ease of comparison among the three methods, I display test results in a line-out plot, where $y$ is fixed. I observed the behavior shown to be representative of any line through the domain. Fig. \ref{fig:comparison} illustrates a line-out plot fixed at $y=0.25$, from a one material, one group problem with scattering. NDA shows a significant correction to diffusion, maintaining most of the accuracy of the higher order equation. 
+To ensure the validity of our results, I first established that NDA is providing an accurate approximation of the transport equation. I ran a number of test problems to check to see that it sufficiently corrects the diffusion equation, as observed in other studies \cite{morel-holo, Wang2013}. For ease of comparison among the three methods, I display test results in a line-out plot, where $y$ is fixed. I observed the behavior shown to be representative of any line through the domain. Fig. \ref{fig:comparison} illustrates a line-out plot fixed at $y=0.25$, from a one material, one group problem with scattering. NDA shows a significant correction to diffusion, maintaining most of the accuracy of the higher order equation. 
 \begin{figure}[H]
     \centering
     \includegraphics[width=.75\textwidth]{fig/LineOut25.png}
@@ -20,12 +26,11 @@ I was only able to run the NDA/SAAF comparison for smaller test problems, as the
 
 \section{One Material}
 For the first test problem, I used a single material with upscattering throughout a 20cm by 20cm domain with a constant unit source in all energy groups throughout the domain. 
- I used cross sections from the seven-group moderator material in the C5G7 benchmark problem \cite{C5G7} to test a material with upscattering.  This material has upscattering in the thermal groups as can be seen in Table \ref{table:modxs} which shows the scattering cross section of this material.
+ I used cross sections from the seven-group moderator material in the C5G7 benchmark problem \cite{C5G7} to test a material with upscattering.  This material has upscattering in the thermal groups as can be seen in Table \ref{table:modxs} which shows the scattering cross section of this material. The magnitude of the upscattering varies from $7.14370 \times 10^{-5} \: cm^{-1}$ going from group 5 to 4 to $1.32440 \times 10^{-1} \: cm^{-1}$ going fro group 7 to 6. 
  \begin{table}[!htb]
-\small
+\footnotesize
 \centering
 \caption{Scattering Matrix for C5G7 Moderator}
-    \label{tab:two}
 \begin{center}
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
@@ -51,7 +56,7 @@ $7$  & 0       &        0        &   0      &     0      &     0   &    1.32440E
 \end{table}
 % For both scattering matrices, it would be good to call out the relevant features. Talk about amount of upscattering in terms of # of groups and magnitude; compare the two materials to one another as well. 
 
-The problems were run on a single 2.7 GHz Intel Core i5 processor of a MacBook Pro and the results are show in Table~\ref{tab:onemat}.
+The problems were run on a single 2.7 GHz Intel Core i5 processor of a MacBook Pro and the results are shown in Table~\ref{tab:onemat}.
 \begin{table}[!htb]
 \centering
 \caption{Runtime and GS Iteration Count for One Material Problem}
@@ -78,7 +83,7 @@ Importantly, the acceleration in convergence came at no cost to accuracy. As can
   \centering
   \includegraphics[width=\linewidth]{fig/nda_c5g7mod_scalar_flux_group0.png}
   \caption{Highest Energy Group, NDA Scalar Flux, \\ in neutrons per $cm^2$}
-  \label{fig:NDA-Mod}
+  \label{fig:NDA-mod}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
@@ -92,13 +97,12 @@ Importantly, the acceleration in convergence came at no cost to accuracy. As can
 
 \section{Two Materials}
 The second problem consists of two materials in a concentric, box geometry, shown in Figure ~\ref{fig:test_geometry}. 
-The first material, located in the center and outer layer, is the C5G7 moderator material used above and the second material does not map to any physical material, but was created for computational purposes. It has the same total cross sections and pattern of upscattering, but with higher absorption and lower total scattering. Both materials have seven groups. 
+The first material, located in the center and outer layer, is the C5G7 moderator material used above and the second material does not map to any physical material, but was created for computational purposes. It has the same total cross sections and pattern of upscattering, but with higher absorption and lower total scattering. Both materials have seven groups. The main features of the scattering matrix are not changed from one material to the other. The only noticeable difference in scattering is a reduction in the within group scattering for each group, proportional to the increase in absorption. The full scattering matrix is given in Table ~\ref{table:mat2}.
 
  \begin{table}[!htb]
-\small
+\footnotesize
 \centering
 \caption{Scattering Matrix for Second Material}
-    \label{tab:two}
 \begin{center}
     \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
@@ -120,6 +124,7 @@ The first material, located in the center and outer layer, is the C5G7 moderator
 \hline
     \end{tabular}
 \end{center}
+\label{table:mat2}
 \end{table}
 
 There is a box source in the center that is 7 in the highest energy group, 2 in the second-highest, and 1 in the third-highest energy group. There is no source in the thermal groups.
@@ -146,7 +151,7 @@ There is a box source in the center that is 7 in the highest energy group, 2 in 
 \end{center}
 \end{table}
 
-The test results are in Table ~\ref{tab:two}. Again, TG-NDA showed a significant improvement over the unaccelerated Gauss Seidel, taking roughly taking roughly 40\% of the time and 32\% of the iterations. Again, NDA and TG-NDA agree in terms of flux values up to tolerance. \todo{Insert value of difference across all energy groups} Figure~\ref{fig:Moderator2} also shows results for the highest energy group and one of the thermal groups. The full results can be found on github at www.github.com/mzweig/gallo/test/benchmarks.
+The test results are in Table ~\ref{tab:two}. Again, TG-NDA showed a significant improvement over the unaccelerated Gauss Seidel, taking roughly taking roughly 40\% of the time and 32\% of the iterations. Again, NDA and TG-NDA agree in terms of flux values up to tolerance. \todo{Insert value of difference across all energy groups} Figures~\ref{fig:Iron-Water0} and \ref{fig:Iron-Water3} also show results for the highest energy group and one of the thermal groups. The full results can be found on github at \\ www.github.com/mzweig/gallo/test/benchmarks.
 
 
 \begin{figure}[H]
@@ -155,16 +160,16 @@ The test results are in Table ~\ref{tab:two}. Again, TG-NDA showed a significant
   \centering
   \includegraphics[width=\linewidth]{fig/nda_iron-water_scalar_flux_group0.png}
   \caption{Highest Energy Group, NDA}
-  \label{fig:NDA-Mod2}
+  \label{fig:NDA-iron-water0}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{fig/tgnda_iron-water_scalar_flux_group0.png}
   \caption{Highest Energy Group, TG-NDA}
-  \label{fig:TG-NDA-Mod2}
+  \label{fig:TG-NDA-iron-water0}
 \end{subfigure}
 \caption{Comparison of NDA and TG-NDA in Scalar Flux for the Two Material Problem}
-\label{fig:Moderator2}
+\label{fig:Iron-Water0}
 \end{figure}
 
 \begin{figure}[H]
@@ -173,16 +178,16 @@ The test results are in Table ~\ref{tab:two}. Again, TG-NDA showed a significant
   \centering
   \includegraphics[width=\linewidth]{fig/nda_iron-water_scalar_flux_group3.png}
   \caption{First Thermal Energy Group, NDA}
-  \label{fig:NDA-Mod}
+  \label{fig:NDA-iron-water3}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{fig/tgnda_iron-water_scalar_flux_group3.png}
   \caption{First Thermal Energy Group, TG-NDA}
-  \label{fig:TG-NDA-Mod}
+  \label{fig:TG-NDA-iron-water3}
 \end{subfigure}
 \caption{Comparison of NDA/TG-NDA in Flux Value for Two Material Problem}
-\label{fig:Moderator}
+\label{fig:Iron-Water3}
 \end{figure}
 
 \section{Reproducibility}

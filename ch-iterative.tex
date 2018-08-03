@@ -54,7 +54,7 @@ For ease of reference, the NDA+SAAF algorithm given in Ch. \ref{sec:intro} using
 \end{enumerate}
 
 \subsection{Multigroup Solver - Gauss Seidel}
-When dealing with a multigroup problem, the scattering source is dependent not only on the flux from the current group, but from other groups as well. In the case that there is no upscattering, meaning that the flux from a lower energy group does not contribute to any higher energy group, the problem can be solved sequentially, starting with the highest energy group and using the fluxes as they are calculated. In the case of upscattering, an initial guess must be chosen for the fluxes of lower energy groups and then iterate until a convergent value is found. One of the most commonly used approaches, which is implemented in this work, is the Gauss-Seidel method.
+When dealing with a multigroup problem, the scattering source is dependent not only on the flux from the current group, but from other groups as well. In the case that there is no upscattering, meaning that the flux from a lower energy group does not contribute to any higher energy group, the problem can be solved sequentially, starting with the highest energy group and using the fluxes as they are calculated. In the case of upscattering, an initial guess must be chosen for the fluxes of lower energy groups and then iterations are performed until a convergent value is found. One of the most commonly used approaches, which is implemented in this work, is the Gauss-Seidel method.
 
 When iterating, the flux calculated in this iteration is used for the higher energy groups and the flux calculated in the previous iteration for the lower energy groups as can be seen in Algorithm \ref{ag:GS}.
 \begin{algorithm}
@@ -74,7 +74,7 @@ When iterating, the flux calculated in this iteration is used for the higher ene
 \end{algorithm}
 
 \subsection{TG-NDA}
-TG-NDA acclerates convergence by applying a correction at two different layers of iteration. NDA applies a correction using the drift vector at each source iteration. Two-Grid provides a correction at each Gauss Seidel iteration. The full scheme as implemented for this work is illustrated in Figure~\ref{fig:tgnda-graph} with the correction terms highlighted in blue. 
+TG-NDA is the combination of two methods applied at different layers of convergence. Doing so accelerates convergence beyond either of the methods used individually. The first method, NDA, applies a correction using the drift vector at each within-group iteration. The second, Two-Grid, provides a correction at each Gauss Seidel iteration. The full scheme as implemented for this work is illustrated in Figure~\ref{fig:tgnda-graph} with the correction terms highlighted in blue. 
 
 \begin{figure}[H]
     \centering

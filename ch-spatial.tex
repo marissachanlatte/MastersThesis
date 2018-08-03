@@ -30,7 +30,7 @@ where $|J(\xi, \eta)|$ is the Jacobian of the transform which is equal to $2Area
 \section{Weak Form of NDA}
 Similar to the higher order equation, we discretize  Eq. 4 via the continuous finite element method by multiplying by a test function and integrating over the domain. This gives the following weak form:
 
-Find $\varphi_{d, g} \in W_D$ such that
+Find $\varphi_{g} \in W_D$ such that
 
   \begin{align}
   \left(D_\rg \nabla \varphi_\rg^{k+1/2}, \nabla \varphi^*_\rg\right)_\mathcal{D} &+ \left(\vec{\bf{D}_\rg}\varphi_\rg^{k+1/2} , \nabla \varphi^*_\rg\right)_\mathcal{D} +  \left(\sigma_{r,\rg} \varphi_{\rg}^{k+1/2}, \varphi^*_\rg\right)_\mathcal{D} = \nonumber \\
@@ -45,10 +45,12 @@ The error (Eq. 8) is similarly discretized via CFEM.
   \end{align}
 
 \section{Weak Form of the Higher Order Equation}
-We apply a finite element discretization to the higher order equation, SAAF, by first multiplying Eq. \ref{eq:SAAF} by a test function $\psi*$ and integrating over the domain $D$.
+We apply a finite element discretization to the higher order equation, SAAF, by taking the inner product of  Eq. \ref{eq:SAAF} and a test function $\psi*$ and integrating over the domain $D$. This gives the weak form:
+
+Find $\psi \in W_{\mathcal D}$ such that
 
 \begin{equation}
-    \left ( -\vec{\Omega} \cdot \vec{\nabla}\frac{1}{\sigma_t}\vec{\Omega} \cdot \vec{\nabla} \psi, \psi* \right )_D + \left ( \sigma_t \psi, \psi* \right )_D = \left ( Q, \psi* \right)_D - \left ( \vec{\Omega} \cdot \vec{\nabla}\frac{Q}{\sigma_t}, \psi* \right)_D
+    \left ( -\vec{\Omega} \cdot \vec{\nabla}\frac{1}{\sigma_t}\vec{\Omega} \cdot \vec{\nabla} \psi, \psi* \right )_D + \left ( \sigma_t \psi, \psi* \right )_D = \left ( Q, \psi* \right)_D - \left ( \vec{\Omega} \cdot \vec{\nabla}\frac{Q}{\sigma_t}, \psi* \right)_D \:.
 \end{equation}
 Integrating by parts,
 
@@ -57,3 +59,10 @@ Integrating by parts,
         \left ( Q, \psi* \right)_D &+ \left ( \vec{\Omega} \frac{Q}{\sigma_t}, \vec{\nabla}\psi* \right)_D - \left ( \vec{\Omega}\cdot \hat{n} \frac{Q}{\sigma_t}, \psi* \right)_{\Gamma} 
 \end{align*}
 
+Rearrange the boundary conditions, as in \cite{zheng-thesis} to get
+\begin{equation}
+    \begin{split}
+        \left ( \vec{\Omega}\frac{1}{\sigma_{t, \rg}}\vec{\Omega}\cdot \vec{\nabla}\psi_\rg, \vec{\nabla}\psi* \right)_\mathcal{D} -     \left < \hat{n} \cdot \hat{\Omega}\psi_\rg, \psi^* \right>_{\hat{n} \cdot \hat{\Omega} < 0, \Gamma} &+ \left ( \sigma_{t, \rg} \psi_\rg, \psi* \right )_\mathcal{D} = \\
+        \left ( q_\rg, \psi* \right)_\mathcal{D} + \left ( \vec{\Omega} \frac{q_\rg}{\sigma_{t, \rg}}, \vec{\nabla}\psi* \right)_\mathcal{D} &- \left < \hat{n} \cdot {\Omega} \psi^{inc}, \psi^* \right>_{\hat{n}, \hat{\Omega} <0, \Gamma} \:.
+    \end{split}
+\end{equation}
