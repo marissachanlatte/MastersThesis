@@ -1,7 +1,7 @@
 \section{Continuous FEM on an Unstructured Grid}
 To discretize in space we will be using the continuous finite element method with bilinear basis functions on an unstructured triangular mesh. The mesh is generated with the Triangle library \cite{shewchuk96b} via a Delaunay triangulation algorithm. 
 \par
-To integrate over the triangles, we have implemented a 2nd degree Gaussian Quadrature approximation over the standard triangle,
+To integrate over the triangles, we have implemented a 2nd degree Gaussian Quadrature approximation over the standard triangle \cite{Deng2010},
 \begin{align}
     \iint_{T_{st}} f(\xi, \eta) d\xi d\eta \approx \frac{1}{6}\left [ f\left( 0, \frac{1}{2} \right ) + f \left( \frac{1}{2}, 0 \right) + f \left( \frac{1}{2}, \frac{1}{2} \right)\right].
 \end{align}
@@ -9,7 +9,7 @@ We are working with an unstructured grid of triangles, so we must additionally m
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.75\textwidth]{fig/TriangleMapping}
-    \caption{Linear mapping between an element K and the standard triangle}
+    \caption{Linear mapping between an element K and the standard triangle \cite{Deng2010}}
     \label{fig:my_label}
 \end{figure}
 The mapping is given as follows
