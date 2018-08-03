@@ -1,0 +1,41 @@
+
+In this work\DIFaddbegin \DIFadd{, }\DIFaddend we derived and implemented a \DIFdelbegin \DIFdel{two grid }\DIFdelend \DIFaddbegin \DIFadd{two-grid }\DIFaddend acceleration scheme for the nonlinear diffusion acceleration equations with neutron upscattering. In our \DIFdelbegin \DIFdel{test problems, we observe }\DIFdelend \DIFaddbegin \DIFadd{tests, we observed }\DIFaddend a reduction in the number of \DIFdelbegin \DIFdel{Gauss-Seidel }\DIFdelend \DIFaddbegin \DIFadd{Gauss Seidel }\DIFaddend iterations necessary to resolve the upscattering \DIFdelbegin \DIFdel{by }\DIFdelend \DIFaddbegin \DIFadd{of }\DIFaddend roughly a factor of three\DIFdelbegin \DIFdel{with no noticeable loss to accuracy. 
+}\DIFdelend \DIFaddbegin \DIFadd{. 
+%DIF >  Add a sentence or two about why this matters and what it could make possible.
+}\DIFaddend 
+
+The current implementation is \DIFdelbegin \DIFdel{a proof of concept }\DIFdelend \DIFaddbegin \DIFadd{in a lightweight }\DIFaddend code developed in \DIFdelbegin \DIFdel{python}\DIFdelend \DIFaddbegin \DIFadd{Python that is only designed as a proof of concept}\DIFaddend . We intend to implement a \DIFdelbegin \DIFdel{performance optimized }\DIFdelend \DIFaddbegin \DIFadd{heavier-duty }\DIFaddend C++ version into the Slaybaugh Lab's neutron transport code, Bay Area Radiation Transport \DIFdelbegin \DIFdel{. Such an implementation would enable testing }\DIFdelend \DIFaddbegin \DIFadd{(BART, link to github). With the BART implementation we can begin to test }\DIFaddend larger problems and \DIFdelbegin \DIFdel{aid in a better understanding of }\DIFdelend \DIFaddbegin \DIFadd{understand }\DIFaddend how the method scales.
+
+\section{Possible Extensions to TG-NDA}
+There are a number of modifications to our implementation of TG-NDA that could be interesting to explore. 
+
+\subsection{\DIFdelbegin \DIFdel{Applications to Criticality Problems}\DIFdelend \DIFaddbegin \DIFadd{Other Discretization Schemes}\DIFaddend }
+\DIFdelbegin \DIFdel{In this work we only focused on fixed-source problems for shielding applications, however many materials commonly used in nuclear reactors, such as water, heavy water, or graphite, also exhibit significant upscattering. Performing criticality calculations using our method would be a straightforward extension involving only a layer of eigenvalue iteration to wrap around the existing implementation. 
+}%DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\subsection{\DIFdel{Compatibility with Other Methods}}
+%DIFAUXCMD
+\addtocounter{subsection}{-1}%DIFAUXCMD
+\DIFdel{In our implementation, we made choices regarding the discretization schemes, iterative methods, and equations we chose to use based on what we felt to be in common usage in the community. However, there are several other options to explore. In particular, 
+}%DIFDELCMD < \begin{enumerate}
+%DIFDELCMD < \item %%%
+\DIFdel{$P_N$ Angular Discretization:
+}\DIFdelend \DIFaddbegin \subsubsection{\DIFadd{$P_N$ Angular Discretization}}
+\DIFaddend Our derivation is specific to the $S_N$ equations. It is possible to derive the higher order equation using $P_N$ instead \cite{zheng-thesis} \DIFdelbegin \DIFdel{and }\DIFdelend \DIFaddbegin \DIFadd{to }\DIFaddend see if there is any effect on the convergence behavior of TG-NDA. 
+\DIFdelbegin %DIFDELCMD < \item %%%
+\DIFdel{Discontinuous Finite Elements:
+}\DIFdelend \DIFaddbegin \subsubsection{\DIFadd{Discontinuous Finite Elements}}
+\DIFaddend In our implementation \DIFaddbegin \DIFadd{,}\DIFaddend we use continuous finite elements to discretize \DIFdelbegin \DIFdel{in }\DIFdelend space. Discretizing NDA using discontinuous finite elements, as done in \cite{Schunert2017}, would change the form of TG-NDA and could change \DIFdelbegin \DIFdel{Gauss-Seidel }\DIFdelend \DIFaddbegin \DIFadd{Gauss Seidel }\DIFaddend convergence behavior. 
+\DIFdelbegin %DIFDELCMD < \item %%%
+\DIFdel{Other Higher Order Equations:
+}\DIFdelend \DIFaddbegin \subsection{\DIFadd{Other Higher Order Equations}}
+\DIFaddend We chose to pair NDA with SAAF\DIFdelbegin \DIFdel{, however}\DIFdelend \DIFaddbegin \DIFadd{; however, }\DIFaddend other equations could be used as well, such as the even-parity equation \cite{Noh1996}. \DIFdelbegin %DIFDELCMD < \item %%%
+\DIFdel{Other Multigroup Solvers:
+TG-NDA is specific to Gauss-Seidel, but a similar procedure could be used to create an acceleration scheme for other multigroup solvers such as Point Jacobi. }%DIFDELCMD < \end{enumerate}
+%DIFDELCMD < 
+
+%DIFDELCMD <  %%%
+\DIFdelend \DIFaddbegin \DIFadd{Using other equations higher order could also cause different convergence behavior. 
+}\subsection{\DIFadd{Applications to Criticality Problems}}
+\DIFadd{In this work we only focused on fixed-source problems for shielding applications. However, an extension to criticality problems could be beneficial as many materials commonly used in nuclear reactors, such as water, heavy water, or graphite, also exhibit significant upscattering. Performing criticality calculations using our method would be a straightforward extension involving only an additional layer of iteration to perform the eigenvalue calculation.  }\DIFaddend
