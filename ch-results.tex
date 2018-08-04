@@ -27,7 +27,7 @@ I was only able to run the NDA/SAAF comparison for smaller test problems, as the
 \section{One Material}
 For the first test problem, I used a single material with upscattering throughout a 20cm by 20cm domain with a constant unit source in all energy groups throughout the domain. 
  I used cross sections from the seven-group moderator material in the C5G7 benchmark problem \cite{C5G7} to test a material with upscattering.  This material has upscattering in the thermal groups as can be seen in Table \ref{table:modxs} which shows the scattering cross section of this material. The magnitude of the upscattering varies from $7.14370 \times 10^{-5} \: cm^{-1}$ going from group 5 to 4 to $1.32440 \times 10^{-1} \: cm^{-1}$ going from group 7 to 6. 
- \begin{table}[!htb]
+ \begin{table}[H]
 \footnotesize
 \centering
 \caption{Scattering Matrix for C5G7 Moderator}
@@ -104,10 +104,18 @@ Importantly, the acceleration in convergence came at no significant cost to accu
 % \end{figure}
 
 \section{Two Materials}
-The second problem consists of two materials in a concentric, box geometry, shown in Figure ~\ref{fig:test_geometry}. 
-The first material, located in the center and outer layer, is the C5G7 moderator material used above and the second material does not map to any physical material, but was created for computational purposes. It has the same total cross sections and pattern of upscattering, but with higher absorption and lower total scattering. Both materials have seven groups. The main features of the scattering matrix are not changed from one material to the other. The only noticeable difference in scattering is a reduction in the within group scattering for each group, proportional to the increase in absorption. The full scattering matrix is given in Table ~\ref{table:mat2}.
+The second problem consists of two materials in a concentric, box geometry, shown in Figure ~\ref{fig:test_geometry}. There is a box source in the center that is 7 in the highest energy group, 2 in the second-highest, and 1 in the third-highest energy group. There is no source in the thermal groups.
 
- \begin{table}[!htb]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.3\textwidth]{fig/Geometry.png}
+    \caption{Geometry of Two-Material Test Problem}
+    \label{fig:test_geometry}
+\end{figure}
+
+The first material, located in the center and outer layer, is the C5G7 moderator material used above. The second material does not map to any physical material, but was created for computational purposes. It has the same total cross sections and pattern of upscattering, but with higher absorption and lower total scattering. Both materials have seven groups. The main features of the scattering matrix are not changed from one material to the other. The only difference in scattering is a reduction in the within-group scattering for each group, proportional to the increase in absorption. The full scattering matrix is given in Table ~\ref{table:mat2}.
+
+ \begin{table}[H]
 \footnotesize
 \centering
 \caption{Scattering Matrix for Second Material}
@@ -135,13 +143,10 @@ The first material, located in the center and outer layer, is the C5G7 moderator
 \label{table:mat2}
 \end{table}
 
-There is a box source in the center that is 7 in the highest energy group, 2 in the second-highest, and 1 in the third-highest energy group. There is no source in the thermal groups.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=.3\textwidth]{fig/Geometry.png}
-    \caption{Geometry of Two-Material Test Problem}
-    \label{fig:test_geometry}
-\end{figure}
+
+The test results are given in Table ~\ref{tab:two}. Again, TG-NDA showed a significant improvement over the unaccelerated Gauss Seidel, taking roughly taking roughly 40\% of the time and 32\% of the iterations. 
+
+
 
 \begin{table}[!htb]
 \centering
@@ -159,7 +164,7 @@ There is a box source in the center that is 7 in the highest energy group, 2 in 
 \end{center}
 \end{table}
 
-The test results are in Table ~\ref{tab:two}. Again, TG-NDA showed a significant improvement over the unaccelerated Gauss Seidel, taking roughly taking roughly 40\% of the time and 32\% of the iterations. Again, NDA and TG-NDA agree in terms of flux values up to tolerance which can be see in Figure~/ref{fig:TwoMatErr}. A similar pattern regarding the difference is observable with the lower energy groups.
+Again, NDA and TG-NDA agree in terms of flux values up to tolerance which can be see in Figure~\ref{fig:TwoMatErr}. A similar pattern regarding the difference is observable with the lower energy groups.
 
 \begin{figure}[H]
     \centering
