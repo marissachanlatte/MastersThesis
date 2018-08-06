@@ -3,12 +3,10 @@ In this section, I present the results of numerical experiments testing the conv
 
 In large, realistic transport simulations there are many components working together to produce a final flux profile. In this proof of concept, I chose to strip down the problem as much as I could to focus strongly on the effects of TG-NDA itself. The key feature that TG-NDA addresses is the presence of upscattering. In designing my test problems, I worked to develop the simplest problem that would test that key feature of TG-NDA. This first problem takes the form of a one material problem, on a square domain with a uniform source of one. The results of this problem alone show the potential of TG-NDA. A reduction by a factor of three in the number of Gauss-Seidel iterations is observed and the problem is completed roughly 40\% of the runtime. 
 
-After showing a proof of concept in the simplest case, the second test inches towards more realistic problems. The two grid method requires the computation of the eigenvector, $\xi$ for each material. To see if that extra computation would significantly affect the runtime improvement, I designed a two material problem to test. Again, as this is meant to be a proof of concept, the fidelity of the materials to those used in real applications is not of interest, only that there is more than one of them and they both have upscattering. I created the second material myself, by maintaining the total cross sections and scattering structure of the C5G7 material, doubling the absorption and decreasing the within group scattering by an appropriate amount. In this problem, the source is confined to the center of the domain and the fast energy groups. Again the problem is solved in roughly a third of the iterations and 40\% of the runtime - A very promising result. 
+After showing a proof of concept in the simplest case, the second test adds another component. The two grid method requires the computation of the eigenvector, $\xi$ for each material. To see if that extra computation would significantly affect the runtime improvement, I designed a two material problem to test. Again, as this is meant to be a proof of concept, the fidelity of the materials to those used in real applications is not of interest. The key feature in this case is that there is more than one material and they both have upscattering. I created the second material myself, by maintaining the total cross sections and scattering structure of the C5G7 material, doubling the absorption and decreasing the within group scattering by an appropriate amount. In this problem, the source is confined to the center of the domain and the fast energy groups. Again the problem is solved in roughly a third of the iterations and 40\% of the runtime - A very promising result. 
 
-These calculations are not meant to be representative of results for large shielding problems or full core simulations. These results support the potential the novel method derived in this work, TG-NDA. It is hoped that these results will stimulate more work in this direction, encouraging developers of larger scale transport codes to consider adopting this method. The details of the test problems discussed and numerical results are given in the following sections. 
-% you need to lay out more of what's coming. What are you testing and why. What are you going to show?
-% I think the main problem max is having is that this section needs to be more meaningful. 
-% Tell us more to help illustrate why this is enough work to show this method is valuable.
+These calculations are not meant to be representative of results for large shielding problems or full core simulations. These results support the potential of the novel method derived in this work, TG-NDA. It is hoped that these results will stimulate more work in this direction, encouraging developers of larger scale transport codes to consider adopting this method. The details of the test problems discussed and numerical results are given in the following sections. 
+
 
 
 \section{NDA Accuracy}
@@ -76,12 +74,12 @@ The problems were run on a single 2.7 GHz Intel Core i5 processor of a MacBook P
 
 The two-grid method provides a considerable acceleration of the Gauss Seidel method. It is able to converge in roughly 30\% the number of iterations and roughly 37\% the time. While when using TG-NDA each iteration takes slightly longer as the correction term must be calculated, there is a considerable decrease in the number of iterations necessary to reach convergence, providing an overall improvement in runtime. 
 
-Importantly, the acceleration in convergence came at no significant cost to accuracy. Figure~\ref{fig:OneMatErr} shows the relative difference per group between TG-NDA and NDA. The difference is around or below the error tolerance set in the Gauss-Seidel solver as 1e-5. There is no difference in the fast groups as there is no upscattering present in those groups, and the error accumulates with groups that have a stronger dependence on the flux of the thermal groups. 
+Importantly, the acceleration in convergence came at no significant cost to accuracy. Figure~\ref{fig:OneMatErr} shows the relative difference per group between the TG-NDA and NDA solutions at each node. The difference is around or below the error tolerance set in the Gauss-Seidel solver as 1e-5, meaning that the solutions agree up to at least four digits, often five. There is no difference between the two solutions in the fast groups as there is no upscattering present in those groups, so the Gauss-Seidel correction does not apply. There is a larger difference in groups 6 and 7, as they have a stronger dependence on the flux of the other groups, so the difference accumulates. Keep in mind that the plot is scaled by 1e-5. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=.75\textwidth]{fig/OneMatErr.pdf}
-    \caption{Relative Difference Per Group, TG-NDA vs. NDA}
+    \caption{Relative Difference Between NDA and TG-NDA A - One Material}
     \label{fig:OneMatErr}
 \end{figure}
 % Importantly, the acceleration in convergence came at no cost to accuracy. As can be seen in Figure~\ref{fig:Moderator}, the NDA and TG-NDA solutions have the same values, up to the tolerance of 1e-5 that was set for the Gauss-Seidel solver. For ease of reading, I only present here the flux in the highest energy group to show that the two methods agree. \todo{Insert value of difference across all energy groups} In this study, the flux itself is not the quantity of interest, instead I hope to highlight the changes in Gauss-Seidel iteration number. For those who are interested in seeing the full comparison of scalar flux between the two method, plots for all groups are available at www.github.com/mzweig/gallo/tests/benchmarks. 
@@ -164,12 +162,12 @@ The test results are given in Table ~\ref{tab:two}. Again, TG-NDA showed a signi
 \end{center}
 \end{table}
 
-Again, NDA and TG-NDA agree in terms of flux values up to tolerance which can be see in Figure~\ref{fig:TwoMatErr}. A similar pattern regarding the difference is observable with the lower energy groups.
+Again, NDA and TG-NDA agree in terms of flux values up to around five digits of accuracy which can be see in Figure~\ref{fig:TwoMatErr}. A similar pattern regarding the difference is observable with the lower energy groups.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=.75\textwidth]{fig/TwoMatErr.pdf}
-    \caption{Relative Difference Per Group, TG-NDA vs. NDA}
+    \caption{Relative Difference Between TG-NDA and NDA  - Two Materials}
     \label{fig:TwoMatErr}
 \end{figure}
 % \todo{Insert value of difference across all energy groups} Figures~\ref{fig:Iron-Water0} and \ref{fig:Iron-Water3} also show results for the highest energy group and one of the thermal groups. The full results can be found on github at \\ www.github.com/mzweig/gallo/test/benchmarks.

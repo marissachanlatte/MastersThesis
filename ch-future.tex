@@ -16,12 +16,12 @@ In this work I focused on fixed-source problems for shielding applications; howe
 \subsection{Compatibility with Other Methods}
 In my implementation, I made choices regarding the discretization schemes, iterative methods, and equations I chose to use based on what I felt to be in common usage in the community. However, there are several other options to explore. In particular, 
 \begin{enumerate}
-\item $P_N$ Angular Discretization:
-Our derivation is specific to the $S_N$ equations. It is possible to derive the higher order equation using $P_N$ instead \cite{zheng-thesis} and see if there is any effect on the convergence behavior of TG-NDA. 
-\item Discontinuous Finite Elements:
-In my implementation I use continuous finite elements to discretize in space. Discretizing NDA using discontinuous finite elements, as done in \cite{Schunert2017}, would change the form of TG-NDA and could change Gauss-Seidel convergence behavior. 
+\item $P_N$\ \textcolor{red}{and $S_N$-$P_N$}\ Angular Discretizations:
+Our derivation is specific to the $S_N$ equations. It is possible to derive the higher order equation using $P_N$\ and the recently developed $S_N$-$P_N$\ hybrid scheme instead \cite{yaqi-wang-snpn,zheng-thesis,zheng-inl-report} and see if there is any effect on the convergence behavior of TG-NDA.
+\item Discontinuous \textcolor{red}{and Other} Finite Elements:
+In my implementation I use continuous finite elements to discretize in space. Discretizing NDA using discontinuous finite elements, as done in \cite{Schunert2017}, would change the form of TG-NDA and could change Gauss-Seidel convergence behavior. \textcolor{red}{Moreover, in a recent work \cite{zheng-ans17},\ Zheng et al\ developed a spatially hybrid finite elements which utilizes continuous finite elements in part of a problem and discontinuous finite elements anywhere else. It is of interest to develop a suitable NDA and TG-NDA for such hybrid finite elements}
 \item Other Higher Order Equations:
-I chose to pair NDA with SAAF, however other equations could be used as well, such as the even-parity equation \cite{Noh1996}.
+I chose to pair NDA with SAAF, however other equations could be used as well, such as the even-parity equation \cite{Noh1996}\ \textcolor{red}{and least-squares transport equations and variants \cite{morel-holo,zheng-lspn,zheng-cdls}}.
 \item Other Multigroup Solvers:
 TG-NDA is specific to Gauss-Seidel, but a similar procedure could be used to create an acceleration scheme for other multigroup solvers such as Point Jacobi.
 \end{enumerate}
