@@ -86,10 +86,10 @@ where $\nabla \cdot \overset{\text{\scriptsize$\leftrightarrow$}}{P_\rg} =  \hat
 
   TG-NDA Update Procedure
   \begin{enumerate}
-      \item Solve \eqref{eq:k1/2} using NDA iteration to find $\phi_\rg^{k+1/2}$ for each group, $\rg$. 
-      \item Solve \eqref{eq:collapsed} to find $\phi_\epsilon^{k+1/2}$. 
-      \item Solve \eqref{eq:eigenvector} to find $\xi$. 
-      \item Use \eqref{eq:decomp} to find $\epsilon_\rg^{k+1/2}$ and apply to each group to get $\phi_\rg^{k+1}$ for all $\rg$. 
+      \item Solve Eqn.~\eqref{eq:k1/2} using NDA iteration to find $\phi_\rg^{k+1/2}$ for each group, $\rg$. 
+      \item Solve Eqn.~\eqref{eq:collapsed} to find $\phi_\epsilon^{k+1/2}$. 
+      \item Solve Eqn.~\eqref{eq:eigenvector} to find $\xi$. 
+      \item Use Eqn.~\eqref{eq:decomp} to find $\epsilon_\rg^{k+1/2}$ and apply to each group to get $\phi_\rg^{k+1}$ for all $\rg$. 
       \item Check for convergence between $\phi_\rg^{k+1}$ and $\phi_\rg^{k}$.
       \item Repeat until all groups have converged.
   \end{enumerate}

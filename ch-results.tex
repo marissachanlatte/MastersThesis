@@ -72,34 +72,16 @@ The problems were run on a single 2.7 GHz Intel Core i5 processor of a MacBook P
 \end{center}
 \end{table}
 
-The two-grid method provides a considerable acceleration of the Gauss Seidel method. It is able to converge in roughly 30\% the number of iterations and roughly 37\% the time. While when using TG-NDA each iteration takes slightly longer as the correction term must be calculated, there is a considerable decrease in the number of iterations necessary to reach convergence, providing an overall improvement in runtime. 
+The two-grid method provides a considerable acceleration of the Gauss Seidel method. It is able to converge in roughly 30\% the number of iterations and roughly 37\% the time. While when using TG-NDA each iteration takes slightly longer as the correction term must be calculated, there is a considerable decrease in the number of iterations necessary to reach convergence, providing an overall improvement in runtime. Gauss-Seidel convergence is determined by the relative error between each iteration and the previous one at each node. All error must be under tolerance to converge. In this case, the Gauss-Seidel tolerance was set to 1e-5.
 
-Importantly, the acceleration in convergence came at no significant cost to accuracy. Figure~\ref{fig:OneMatErr} shows the relative difference per group between the TG-NDA and NDA solutions at each node. The difference is around or below the error tolerance set in the Gauss-Seidel solver as 1e-5, meaning that the solutions agree up to at least four digits, often five. There is no difference between the two solutions in the fast groups as there is no upscattering present in those groups, so the Gauss-Seidel correction does not apply. There is a larger difference in groups 6 and 7, as they have a stronger dependence on the flux of the other groups, so the difference accumulates. Keep in mind that the plot is scaled by 1e-5. 
+Importantly, the acceleration in convergence came at no significant cost to accuracy. Figure~\ref{fig:OneMatErr} shows the relative difference per group between the TG-NDA and NDA solutions at each node.  There is no difference between the two solutions in the fast groups as there is no upscattering present in those groups, so the Gauss-Seidel correction does not apply. In the thermal groups, the difference is around or below 1e-5, the error tolerance set in the Gauss-Seidel solver, meaning that the solutions agree up to at least four digits, often five. The plots are boxplots showing the mean and variance of the differences across nodes. The dots above represent outliers. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=.75\textwidth]{fig/OneMatErr.pdf}
-    \caption{Relative Difference Between NDA and TG-NDA A - One Material}
+    \caption{Relative Difference Between NDA and TG-NDA - One Material}
     \label{fig:OneMatErr}
 \end{figure}
-% Importantly, the acceleration in convergence came at no cost to accuracy. As can be seen in Figure~\ref{fig:Moderator}, the NDA and TG-NDA solutions have the same values, up to the tolerance of 1e-5 that was set for the Gauss-Seidel solver. For ease of reading, I only present here the flux in the highest energy group to show that the two methods agree. \todo{Insert value of difference across all energy groups} In this study, the flux itself is not the quantity of interest, instead I hope to highlight the changes in Gauss-Seidel iteration number. For those who are interested in seeing the full comparison of scalar flux between the two method, plots for all groups are available at www.github.com/mzweig/gallo/tests/benchmarks. 
-% \begin{figure}[H]
-% \centering
-% \begin{subfigure}{.5\textwidth}
-%   \centering
-%   \includegraphics[width=\linewidth]{fig/nda_c5g7mod_scalar_flux_group0.png}
-%   \caption{Highest Energy Group, NDA Scalar Flux, \\ in neutrons per $cm^2$}
-%   \label{fig:NDA-mod}
-% \end{subfigure}%
-% \begin{subfigure}{.5\textwidth}
-%   \centering
-%   \includegraphics[width=\linewidth]{fig/tgnda_c5g7mod_scalar_flux_group0.png}
-%   \caption{Highest Energy Group, TG-NDA Scalar Flux, \\ in neutrons per $cm^2$}
-%   \label{fig:TG-NDA-Mod}
-% \end{subfigure}
-% \caption{Comparison of NDA and TG-NDA in Scalar Flux for the One Material Problem}
-% \label{fig:Moderator}
-% \end{figure}
 
 \section{Two Materials}
 The second problem consists of two materials in a concentric, box geometry, shown in Figure ~\ref{fig:test_geometry}. There is a box source in the center that is 7 in the highest energy group, 2 in the second-highest, and 1 in the third-highest energy group. There is no source in the thermal groups.
@@ -142,7 +124,7 @@ The first material, located in the center and outer layer, is the C5G7 moderator
 \end{table}
 
 
-The test results are given in Table ~\ref{tab:two}. Again, TG-NDA showed a significant improvement over the unaccelerated Gauss Seidel, taking roughly taking roughly 40\% of the time and 32\% of the iterations. 
+The test results are given in Table ~\ref{tab:two}. Again, TG-NDA showed a significant improvement over the unaccelerated Gauss-Seidel, taking roughly taking roughly 40\% of the time and 32\% of the iterations. 
 
 
 
